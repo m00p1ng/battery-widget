@@ -1,18 +1,18 @@
 const electron = require('electron')
-const { app, BrowserWindow } = electron
+const { app, BrowserWindow, MenuItem, Menu } = electron
 const BatteryLevel = require('macos-battery-level')
 
 let mainWindow
 
 function createWindow() {
   const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize
-  console.log(width, height)
   app.dock.hide();
   mainWindow = new BrowserWindow({
-    width: 150,
+    width: 180,
     height: 35,
     x: width,
     y: height,
+    resizable: false,
     alwaysOnTop: true,
     webPreferences: {
       backgroundThrottling: false,
@@ -23,6 +23,14 @@ function createWindow() {
 
   mainWindow.setVisibleOnAllWorkspaces(true)
 
+  mainWindow.on('closed', function () {
+    mainWindow = null
+  })
+}
+
+app.on('ready', () => {
+  createWindow()
+
   mainWindow.loadURL(`http://localhost:3000/`)
 
   mainWindow.webContents.on('did-finish-load', () => {
@@ -31,12 +39,18 @@ function createWindow() {
     })
   })
 
-  mainWindow.on('closed', function () {
-    mainWindow = null
-  })
-}
+  const ctxMenu = new Menu()
+  ctxMenu.append(new MenuItem({
+    label: "Quit",
+    click: () => {
+      app.quit()
+    }
+  }))
 
-app.on('ready', createWindow)
+  mainWindow.webContents.on('context-menu', (event) => {
+    ctxMenu.popup()
+  })
+})
 
 app.on('window-all-closed', function () {
   app.quit()

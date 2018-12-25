@@ -5,6 +5,7 @@
   align-items: center;
   font-family: Helvetica, sans-serif;
   overflow: hidden;
+  cursor: pointer;
 }
 
 #battery-image {

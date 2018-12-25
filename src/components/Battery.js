@@ -49,7 +49,7 @@ class Battery extends Component {
     const imgPath = this.getCurrentImage(percentage, status)
     return (
       <>
-        <Clock ticking={true} format={'HH:mm'} />
+        <Clock ticking={true} format={'ddd HH:mm'} />
         <span id="battery-percent">{percentage}%</span>
         <img src={imgPath} alt="battery" id="battery-image" />
       </>

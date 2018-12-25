@@ -22,7 +22,7 @@ class App extends Component {
     return (
       <div className="App">
         {this.state.battery.percentage === '' ?
-          "Loading" : (<Battery battery={this.state.battery} />)
+          "Loading..." : (<Battery battery={this.state.battery} />)
         }
       </div>
     );
