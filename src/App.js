@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Clock from 'react-live-clock';
 
 import Battery from './components/Battery'
 import './assets/styles.css'
@@ -22,7 +23,12 @@ class App extends Component {
     return (
       <div className="App">
         {this.state.battery.percentage === '' ?
-          "Loading..." : (<Battery battery={this.state.battery} />)
+          "Loading..." : (
+            <>
+              <Clock ticking={true} format={'ddd HH:mm'} />
+              <Battery battery={this.state.battery} />
+            </>
+          )
         }
       </div>
     );

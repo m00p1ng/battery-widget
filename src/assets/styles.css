@@ -4,6 +4,7 @@
   align-items: center;
   font-family: Helvetica, sans-serif;
   cursor: pointer;
+  justify-content: space-between;
 }
 
 #battery-image {
@@ -11,8 +12,14 @@
 }
 
 #battery-percent {
-  margin-left: 0.5rem;
-  margin-right: 0.5rem;
+  margin-left: 0.3rem;
+  margin-right: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.battery-wrapper {
+  display: flex;
 }
 
 html,
