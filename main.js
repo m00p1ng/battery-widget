@@ -1,5 +1,5 @@
 const electron = require('electron')
-const { app, BrowserWindow, MenuItem, Menu, globalShortcut } = electron
+const { app, BrowserWindow, MenuItem, Menu } = electron
 const BatteryLevel = require('macos-battery-level')
 const path = require('path')
 
@@ -21,6 +21,7 @@ function createWindow() {
     webPreferences: {
       backgroundThrottling: false,
     },
+    hasShadow: false,
     frame: false,
     vibrancy: 'ultra-dark',
   })
@@ -83,9 +84,6 @@ app.on('ready', () => {
   mainWindow.webContents.on('context-menu', (event) => {
     menu.popup()
   })
-
-  globalShortcut.register('CommandOrControl+Q', () => undefined)
-  globalShortcut.register('CommandOrControl+W', () => undefined)
 })
 
 app.on('window-all-closed', function () {
