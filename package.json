@@ -2,16 +2,23 @@
   "name": "battery-widget",
   "version": "0.1.0",
   "private": true,
+  "main": "main.js",
   "dependencies": {
+    "macos-battery-level": "^1.0.0",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
+    "react-live-clock": "^3.0.0",
     "react-scripts": "2.1.2"
+  },
+  "devDependencies": {
+    "electron": "^4.0.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "electron": "electron ."
   },
   "eslintConfig": {
     "extends": "react-app"

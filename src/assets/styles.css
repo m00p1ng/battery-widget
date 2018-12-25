@@ -1,0 +1,33 @@
+.App {
+  color: white;
+  /* background-color: black; */
+  display: flex;
+  align-items: center;
+  font-family: Helvetica, sans-serif;
+  overflow: hidden;
+}
+
+#battery-image {
+  max-height: 20px;
+}
+
+#battery-percent {
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
+
+html,
+body {
+  width: 100vw;
+  height: 100vh;
+  -webkit-user-select: none;
+}
+
+*,
+*::after,
+*::before {
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+  -webkit-app-region: no-drag;
+  cursor: default;
+}
