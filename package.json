@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "main": "main.js",
+  "homepage": "./",
   "dependencies": {
     "macos-battery-level": "^1.0.0",
     "react": "^16.7.0",
@@ -16,10 +17,12 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=src/assets/Battery.icns --prune=true --out=release-builds",
+    "react:build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "electron": "electron ."
+    "electron": "NODE_ENV=development electron .",
+    "electron:build": " NODE_ENV=production electron-packager . --overwrite --platform=darwin --arch=x64 --icon=src/assets/Battery.icns --prune=true --out=release-builds",
+    "app:build": "yarn react:build && yarn electron:build"
   },
   "eslintConfig": {
     "extends": "react-app"

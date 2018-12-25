@@ -1,6 +1,7 @@
 const electron = require('electron')
 const { app, BrowserWindow, MenuItem, Menu } = electron
 const BatteryLevel = require('macos-battery-level')
+const path = require('path')
 
 let mainWindow
 const windowHeight = 35
@@ -9,6 +10,7 @@ const windowWidth = 180
 function createWindow() {
   const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize
   app.dock.hide();
+  app.setName("Battery Widget")
   mainWindow = new BrowserWindow({
     width: windowWidth,
     height: windowHeight,
@@ -32,8 +34,11 @@ function createWindow() {
 
 app.on('ready', () => {
   createWindow()
+  const URL = (process.env.NODE_ENV !== 'development') ?
+    `file://${path.join(__dirname, './build/index.html')}` :
+    `http://localhost:3000/`
 
-  mainWindow.loadURL(`http://localhost:3000/`)
+  mainWindow.loadURL(URL)
 
   mainWindow.webContents.on('did-finish-load', () => {
     BatteryLevel().subscribe(percent => {
