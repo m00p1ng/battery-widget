@@ -16,7 +16,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=src/assets/Battery.icns --prune=true --out=release-builds",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "electron": "electron ."

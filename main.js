@@ -3,13 +3,15 @@ const { app, BrowserWindow, MenuItem, Menu } = electron
 const BatteryLevel = require('macos-battery-level')
 
 let mainWindow
+const windowHeight = 35
+const windowWidth = 180
 
 function createWindow() {
   const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize
   app.dock.hide();
   mainWindow = new BrowserWindow({
-    width: 180,
-    height: 35,
+    width: windowWidth,
+    height: windowHeight,
     x: width,
     y: height,
     resizable: false,
@@ -39,8 +41,34 @@ app.on('ready', () => {
     })
   })
 
-  const ctxMenu = new Menu()
-  ctxMenu.append(new MenuItem({
+  const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize
+  const menu = new Menu()
+  menu.append(new MenuItem({
+    label: "Top Left",
+    click: () => {
+      mainWindow.setPosition(0, 0)
+    }
+  }))
+  menu.append(new MenuItem({
+    label: "Top Right",
+    click: () => {
+      mainWindow.setPosition(width - windowWidth, 0)
+    }
+  }))
+  menu.append(new MenuItem({
+    label: "Bottom Left",
+    click: () => {
+      mainWindow.setPosition(0, height - windowHeight)
+    }
+  }))
+  menu.append(new MenuItem({
+    label: "Bottom Right",
+    click: () => {
+      mainWindow.setPosition(width - windowWidth, height - windowHeight)
+    }
+  }))
+  menu.append(new MenuItem({ type: 'separator' }))
+  menu.append(new MenuItem({
     label: "Quit",
     click: () => {
       app.quit()
@@ -48,7 +76,7 @@ app.on('ready', () => {
   }))
 
   mainWindow.webContents.on('context-menu', (event) => {
-    ctxMenu.popup()
+    menu.popup()
   })
 })
 
