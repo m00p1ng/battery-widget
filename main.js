@@ -4,10 +4,9 @@ const BatteryLevel = require('macos-battery-level')
 const path = require('path')
 
 let mainWindow
-const windowHeight = 32
+const windowHeight = 34
 const windowWidth = 180
-
-const windowEstimateWidth = 212;
+const windowEstimateWidth = 211;
 
 const createWindow = () => {
   const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize

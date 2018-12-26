@@ -16,7 +16,8 @@
 }
 
 #battery-image {
-  max-height: 18px;
+  height: 18px;
+  width: 33px;
 }
 
 #battery-percent {
