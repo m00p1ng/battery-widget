@@ -18,6 +18,10 @@
   align-items: center;
 }
 
+#battery-estimate {
+  margin-left: 0.3rem;
+}
+
 .battery-wrapper {
   display: flex;
 }

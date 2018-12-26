@@ -5,9 +5,9 @@ const path = require('path')
 
 let mainWindow
 const windowHeight = 35
-const windowWidth = 180
+const windowWidth = 220
 
-function createWindow() {
+const createWindow = () => {
   const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize
   app.dock.hide();
   app.setName("Battery Widget")
@@ -28,7 +28,7 @@ function createWindow() {
 
   mainWindow.setVisibleOnAllWorkspaces(true)
 
-  mainWindow.on('closed', function () {
+  mainWindow.on('closed', () => {
     mainWindow = null
   })
 }
