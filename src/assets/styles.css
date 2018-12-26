@@ -1,19 +1,28 @@
 .App {
   color: white;
-  display: flex;
-  align-items: center;
   font-family: Helvetica, sans-serif;
   cursor: pointer;
+  background-color: black;
+}
+
+.widget {
+  display: flex;
   justify-content: space-between;
+  align-items: center;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
 }
 
 #battery-image {
-  max-height: 20px;
+  max-height: 18px;
 }
 
 #battery-percent {
   margin-left: 0.3rem;
-  margin-right: 1rem;
+  margin-right: 0.8rem;
   display: flex;
   align-items: center;
 }

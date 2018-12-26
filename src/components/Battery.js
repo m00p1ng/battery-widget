@@ -13,8 +13,11 @@ const renderBattery = (percent, status, estimate) => {
   return <NormalBattery percentage={percent} />
 }
 
-const renderEstimateText = (estimate) => {
-  if (estimate.includes("no estimate") || estimate.includes("not charg")) {
+const renderEstimateText = (estimate, status) => {
+  if (status === 'charged' || status === "AC attached" ||
+    (status === 'charging')) {
+    return ''
+  } else if (estimate.includes("no estimate") || estimate.includes("not charg")) {
     return "(-:--)"
   } else {
     const time = estimate.split(' ')[0]
@@ -29,7 +32,7 @@ const Battery = ({ battery }) => {
       {renderBattery(percentage, status, estimate)}
       <span id="battery-percent">
         {percentage}%
-        <span id="battery-estimate">{renderEstimateText(estimate)}</span>
+        <span id="battery-estimate">{renderEstimateText(estimate, status)}</span>
       </span>
     </div>
   )

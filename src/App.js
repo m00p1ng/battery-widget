@@ -14,20 +14,23 @@ class App extends Component {
       estimate: ''
     }
   }
+
   componentDidMount() {
     ipcRenderer.on("battery-level", (event, message) => {
       this.setState({ battery: message })
     });
   }
+
   render() {
     return (
       <div className="App">
         {this.state.battery.percentage === '' ?
-          "Loading..." : (
-            <>
+          <div className="loading">Loading...</div> :
+          (
+            <div className="widget">
               <Clock ticking={true} format={'ddd HH:mm'} />
               <Battery battery={this.state.battery} />
-            </>
+            </div>
           )
         }
       </div>
