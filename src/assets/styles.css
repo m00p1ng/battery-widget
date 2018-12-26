@@ -2,17 +2,9 @@
   color: white;
   font-family: Helvetica, sans-serif;
   cursor: pointer;
-}
-
-.widget {
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-.loading {
-  display: flex;
-  justify-content: center;
 }
 
 #battery-image {

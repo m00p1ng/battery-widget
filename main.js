@@ -10,7 +10,6 @@ const windowEstimateWidth = 211;
 
 const createWindow = () => {
   const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize
-  app.dock.hide();
   app.setName("Battery Widget")
   mainWindow = new BrowserWindow({
     width: windowWidth,
@@ -86,6 +85,7 @@ app.on('ready', () => {
       }
       lastStatus = status
     })
+    app.dock.hide()
   })
 
   const menu = new Menu()
