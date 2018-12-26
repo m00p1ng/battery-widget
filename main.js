@@ -7,7 +7,7 @@ let mainWindow
 const windowHeight = 32
 const windowWidth = 180
 
-const windowEstimateWidth = 210;
+const windowEstimateWidth = 212;
 
 const createWindow = () => {
   const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize
@@ -90,34 +90,18 @@ app.on('ready', () => {
   })
 
   const menu = new Menu()
-  menu.append(new MenuItem({
-    label: "Top Left",
-    click: () => {
-      mainWindow.setBounds(getPosition("Top Left", lastStatus))
-      currentPostion = "Top Left"
-    }
-  }))
-  menu.append(new MenuItem({
-    label: "Top Right",
-    click: () => {
-      mainWindow.setBounds(getPosition("Top Right", lastStatus))
-      currentPostion = "Top Right"
-    }
-  }))
-  menu.append(new MenuItem({
-    label: "Bottom Left",
-    click: () => {
-      mainWindow.setBounds(getPosition("Bottom Left", lastStatus))
-      currentPostion = "Bottom Left"
-    }
-  }))
-  menu.append(new MenuItem({
-    label: "Bottom Right",
-    click: () => {
-      mainWindow.setBounds(getPosition("Bottom Right", lastStatus))
-      currentPostion = "Bottom Right"
-    }
-  }))
+  const position = ["Top Left", "Top Right", "Bottom Left", "Bottom Right"]
+
+  position.forEach((pos) => {
+    menu.append(new MenuItem({
+      label: pos,
+      click: () => {
+        mainWindow.setBounds(getPosition(pos, lastStatus))
+        currentPostion = pos
+      }
+    }))
+  })
+
   menu.append(new MenuItem({ type: 'separator' }))
   menu.append(new MenuItem({
     label: "Quit",
