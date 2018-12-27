@@ -11,14 +11,14 @@ class App extends Component {
     battery: {
       status: '',
       percentage: '',
-      estimate: ''
+      estimate: '',
     }
   }
 
   componentDidMount() {
     ipcRenderer.on("battery-level", (_event, message) => {
       this.setState({ battery: message })
-    });
+    })
   }
 
   render() {
@@ -30,7 +30,7 @@ class App extends Component {
           null
         }
       </div>
-    );
+    )
   }
 }
 

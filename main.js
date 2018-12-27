@@ -6,7 +6,7 @@ const path = require('path')
 let mainWindow
 const windowHeight = 34
 const windowWidth = 180
-const windowEstimateWidth = 211;
+const windowEstimateWidth = 220;
 
 const createWindow = () => {
   const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize
@@ -65,8 +65,8 @@ const getPosition = (position, batteryStatus) => {
 }
 
 app.on('ready', () => {
-  let lastStatus = ''
-  let currentPostion = "Bottom Right"
+  let lastStatus = 'charged'
+  let currentPostion = 'Bottom Right'
 
   createWindow()
   const URL = (process.env.NODE_ENV !== 'development') ?
