@@ -102,46 +102,46 @@ const createContextMenu = () => {
     }
   }))
 
-  mainWindow.webContents.on('context-menu', (event) => {
+  mainWindow.webContents.on('context-menu', () => {
     menu.popup()
   })
 }
 
-const isShowEstimate = ({ showBatteryEstimate, showChargeEstimate, batteryStatus: status }) => {
-  return ((showBatteryEstimate && status === 'discharging')) ||
-    (showChargeEstimate && (status === 'charging' || status === 'charged'))
-}
+const isShowEstimate = ({ showBatteryEstimate, showChargeEstimate, batteryStatus: status }) => (
+  (showBatteryEstimate && status === 'discharging') ||
+  (showChargeEstimate && (status === 'charging' || status === 'charged'))
+)
 
 const getPosition = ({ position, batteryStatus, showBatteryEstimate, showChargeEstimate }) => {
   const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize
-  const condition = {
+  const showEstimate = isShowEstimate({
     showBatteryEstimate,
     showChargeEstimate,
     batteryStatus,
-  }
+  })
 
   switch (position) {
     case 'Top Left':
-      if (isShowEstimate(condition)) {
+      if (showEstimate) {
         return { x: 0, y: 0, width: windowEstimateWidth }
       } else {
         return { x: 0, y: 0, width: windowWidth }
       }
     case 'Top Right':
-      if (isShowEstimate(condition)) {
+      if (showEstimate) {
         return { x: width - windowEstimateWidth, y: 0, width: windowEstimateWidth }
       } else {
         return { x: width - windowWidth, y: 0, width: windowWidth }
       }
     case 'Bottom Left':
-      if (isShowEstimate(condition)) {
+      if (showEstimate) {
         return { x: 0, y: height - windowHeight, width: windowEstimateWidth }
       } else {
         return { x: 0, y: height - windowHeight, width: windowWidth }
       }
     case 'Bottom Right':
     default:
-      if (isShowEstimate(condition)) {
+      if (showEstimate) {
         return { x: width - windowEstimateWidth, y: height - windowHeight, width: windowEstimateWidth }
       } else {
         return { x: width - windowWidth, y: height - windowHeight, width: windowWidth }
@@ -161,10 +161,8 @@ app.on('ready', () => {
     createContextMenu()
     app.dock.hide()
 
-    batteryObservable = BatteryLevel().subscribe(result => {
-      if ('webContents' in mainWindow) {
-        mainWindow.webContents.send('battery-level', result)
-      }
+    batteryObservable = BatteryLevel().subscribe((result) => {
+      mainWindow.webContents.send('battery-level', result)
       const { status } = result
 
       if (status !== lastStatus) {
@@ -176,16 +174,16 @@ app.on('ready', () => {
         }))
       }
       lastStatus = status
-    })
+    }, () => { })
   })
 })
 
-app.on('window-all-closed', function () {
+app.on('window-all-closed', () => {
   batteryObservable.unsubscribe()
   app.quit()
 })
 
-app.on('activate', function () {
+app.on('activate', () => {
   if (mainWindow === null) {
     createWindow()
   }
