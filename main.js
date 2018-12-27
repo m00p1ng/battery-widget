@@ -47,12 +47,13 @@ const createContextMenu = () => {
     menu.append(new MenuItem({
       label: pos,
       click: () => {
-        mainWindow.setBounds(getPosition({
-          pos,
+        const pst = getPosition({
+          position: pos,
           batteryStatus: lastStatus,
           showBatteryEstimate,
           showChargeEstimate,
-        }))
+        })
+        mainWindow.setBounds(pst)
         currentPosition = pos
       }
     }))
