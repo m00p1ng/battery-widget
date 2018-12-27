@@ -21,14 +21,13 @@ let showBatteryEstimate
 let showChargeEstimate
 
 const createWindow = () => {
-  const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize
+  initSetting()
+
   app.setName('Battery Widget')
   mainWindow = new BrowserWindow({
-    width: windowWidth,
+    ...getPosition({ position: currentPosition, batteryStatus: '' }),
     height: windowHeight,
     focusable: false,
-    x: width,
-    y: height,
     resizable: false,
     alwaysOnTop: true,
     webPreferences: {
@@ -56,8 +55,6 @@ const createContextMenu = () => {
         mainWindow.setBounds(getPosition({
           position: pos,
           batteryStatus: lastStatus,
-          showBatteryEstimate,
-          showChargeEstimate,
         }))
         currentPosition = pos
         settings.set('position', pos)
@@ -81,8 +78,6 @@ const createContextMenu = () => {
       mainWindow.setBounds(getPosition({
         currentPosition,
         batteryStatus: lastStatus,
-        showBatteryEstimate,
-        showChargeEstimate
       }))
     }
   }))
@@ -98,8 +93,6 @@ const createContextMenu = () => {
       mainWindow.setBounds(getPosition({
         currentPosition,
         batteryStatus: lastStatus,
-        showBatteryEstimate,
-        showChargeEstimate,
       }))
     }
   }))
@@ -117,18 +110,14 @@ const createContextMenu = () => {
   })
 }
 
-const isShowEstimate = ({ showBatteryEstimate, showChargeEstimate, batteryStatus: status }) => (
+const isShowEstimate = ({ batteryStatus: status }) => (
   (showBatteryEstimate && status === 'discharging') ||
   (showChargeEstimate && (status === 'charging' || status === 'charged'))
 )
 
-const getPosition = ({ position, batteryStatus, showBatteryEstimate, showChargeEstimate }) => {
+const getPosition = ({ position, batteryStatus }) => {
   const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize
-  const showEstimate = isShowEstimate({
-    showBatteryEstimate,
-    showChargeEstimate,
-    batteryStatus,
-  })
+  const showEstimate = isShowEstimate({ batteryStatus })
 
   switch (position) {
     case windowPosition.TOP_LEFT:
@@ -166,6 +155,7 @@ const initSetting = () => {
       charging: false,
     })
   }
+
   if (!settings.has('position')) {
     settings.set('position', windowPosition.BOTTOM_RIGHT)
   }
@@ -176,7 +166,6 @@ const initSetting = () => {
 }
 
 app.on('ready', () => {
-  initSetting()
   createWindow()
   const URL = (process.env.NODE_ENV !== 'development') ?
     `file://${path.join(__dirname, './build/index.html')}` :
@@ -196,10 +185,8 @@ app.on('ready', () => {
 
       if (status !== lastStatus) {
         mainWindow.setBounds(getPosition({
-          currentPosition,
+          position: currentPosition,
           batteryStatus: status,
-          showBatteryEstimate,
-          showChargeEstimate,
         }))
       }
       lastStatus = status
