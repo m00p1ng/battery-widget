@@ -7,9 +7,15 @@ let mainWindow
 const windowHeight = 34
 const windowWidth = 180
 const windowEstimateWidth = 220;
+const windowPosition = {
+  TOP_LEFT: 0,
+  TOP_RIGHT: 1,
+  BOTTOM_LEFT: 2,
+  BOTTOM_RIGHT: 3,
+}
 
 let lastStatus = 'charged'
-let currentPosition = 'Bottom Right'
+let currentPosition = windowPosition.BOTTOM_RIGHT
 let showBatteryEstimate = false
 let showChargeEstimate = false
 let batteryObservable
@@ -41,11 +47,12 @@ const createWindow = () => {
 
 const createContextMenu = () => {
   const menu = new Menu()
-  const position = ['Top Left', 'Top Right', 'Bottom Left', 'Bottom Right']
+  const positionName = ['Top Left', 'Top Right', 'Bottom Left', 'Bottom Right']
 
-  position.forEach((pos) => {
+  Object.values(windowPosition).forEach((pos) => {
+    console.log(pos)
     menu.append(new MenuItem({
-      label: pos,
+      label: positionName[pos],
       click: () => {
         const pst = getPosition({
           position: pos,
@@ -121,25 +128,25 @@ const getPosition = ({ position, batteryStatus, showBatteryEstimate, showChargeE
   })
 
   switch (position) {
-    case 'Top Left':
+    case windowPosition.TOP_LEFT:
       if (showEstimate) {
         return { x: 0, y: 0, width: windowEstimateWidth }
       } else {
         return { x: 0, y: 0, width: windowWidth }
       }
-    case 'Top Right':
+    case windowPosition.TOP_RIGHT:
       if (showEstimate) {
         return { x: width - windowEstimateWidth, y: 0, width: windowEstimateWidth }
       } else {
         return { x: width - windowWidth, y: 0, width: windowWidth }
       }
-    case 'Bottom Left':
+    case windowPosition.BOTTOM_LEFT:
       if (showEstimate) {
         return { x: 0, y: height - windowHeight, width: windowEstimateWidth }
       } else {
         return { x: 0, y: height - windowHeight, width: windowWidth }
       }
-    case 'Bottom Right':
+    case windowPosition.BOTTOM_RIGHT:
     default:
       if (showEstimate) {
         return { x: width - windowEstimateWidth, y: height - windowHeight, width: windowEstimateWidth }
