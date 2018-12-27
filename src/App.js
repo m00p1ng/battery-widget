@@ -12,12 +12,18 @@ class App extends Component {
       status: '',
       percentage: '',
       estimate: '',
-    }
+    },
+    showEstimate: false,
   }
 
   componentDidMount() {
     ipcRenderer.on("battery-level", (_event, message) => {
       this.setState({ battery: message })
+    })
+
+    ipcRenderer.on("show-estimate", (_event, message) => {
+      this.setState({ showEstimate: message })
+      console.log(this.state.showEstimate)
     })
   }
 
@@ -26,7 +32,7 @@ class App extends Component {
       <div className="App">
         <Clock ticking={true} format={'ddd HH:mm'} />
         {this.state.battery.percentage !== '' ?
-          <Battery battery={this.state.battery} /> :
+          <Battery battery={this.state.battery} showEstimate={this.state.showEstimate} /> :
           null
         }
       </div>

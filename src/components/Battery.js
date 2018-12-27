@@ -26,7 +26,7 @@ const renderEstimateText = (estimate, status) => {
   }
 }
 
-const Battery = ({ battery }) => {
+const Battery = ({ battery, showEstimate }) => {
   const { percentage, status, estimate } = battery
   return (
     <div className="battery-wrapper">
@@ -34,9 +34,11 @@ const Battery = ({ battery }) => {
       <span id="battery-percent">
         {percentage}%
       </span>
-      <span id="battery-estimate">
-        {renderEstimateText(estimate, status)}
-      </span>
+      {showEstimate ?
+        <span id="battery-estimate">
+          {renderEstimateText(estimate, status)}
+        </span> : null
+      }
     </div>
   )
 }

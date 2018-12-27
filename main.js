@@ -33,30 +33,30 @@ const createWindow = () => {
   })
 }
 
-const getPosition = (position, batteryStatus) => {
+const getPosition = (position, batteryStatus, showEstimate = false) => {
   const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize
   switch (position) {
     case "Top Left":
-      if (batteryStatus === 'discharging') {
+      if (batteryStatus === 'discharging' && showEstimate) {
         return { x: 0, y: 0, width: windowEstimateWidth }
       } else {
         return { x: 0, y: 0, width: windowWidth }
       }
     case "Top Right":
-      if (batteryStatus === 'discharging') {
+      if (batteryStatus === 'discharging' && showEstimate) {
         return { x: width - windowEstimateWidth, y: 0, width: windowEstimateWidth }
       } else {
         return { x: width - windowWidth, y: 0, width: windowWidth }
       }
     case "Bottom Left":
-      if (batteryStatus === 'discharging') {
+      if (batteryStatus === 'discharging' && showEstimate) {
         return { x: 0, y: height - windowHeight, width: windowEstimateWidth }
       } else {
         return { x: 0, y: height - windowHeight, width: windowWidth }
       }
     case "Bottom Right":
     default:
-      if (batteryStatus === 'discharging') {
+      if (batteryStatus === 'discharging' && showEstimate) {
         return { x: width - windowEstimateWidth, y: height - windowHeight, width: windowEstimateWidth }
       } else {
         return { x: width - windowWidth, y: height - windowHeight, width: windowWidth }
@@ -67,6 +67,8 @@ const getPosition = (position, batteryStatus) => {
 app.on('ready', () => {
   let lastStatus = 'charged'
   let currentPostion = 'Bottom Right'
+
+  let showEstimate = false
 
   createWindow()
   const URL = (process.env.NODE_ENV !== 'development') ?
@@ -81,7 +83,7 @@ app.on('ready', () => {
       const { status } = result
 
       if (status !== lastStatus) {
-        mainWindow.setBounds(getPosition(currentPostion, status))
+        mainWindow.setBounds(getPosition(currentPostion, status, showEstimate))
       }
       lastStatus = status
     })
@@ -89,25 +91,37 @@ app.on('ready', () => {
   })
 
   const menu = new Menu()
-  const position = ["Top Left", "Top Right", "Bottom Left", "Bottom Right"]
+  const position = ['Top Left', 'Top Right', 'Bottom Left', 'Bottom Right']
 
   position.forEach((pos) => {
     menu.append(new MenuItem({
       label: pos,
       click: () => {
-        mainWindow.setBounds(getPosition(pos, lastStatus))
+        mainWindow.setBounds(getPosition(pos, lastStatus, showEstimate))
         currentPostion = pos
       }
     }))
   })
 
-  menu.append(new MenuItem({ type: 'separator' }))
-  menu.append(new MenuItem({
-    label: "Quit",
-    click: () => {
-      app.quit()
-    }
-  }))
+  mainWindow.webContents.on('did-finish-load', () => {
+    menu.append(new MenuItem({ type: 'separator' }))
+    menu.append(new MenuItem({
+      label: 'Show Estimate',
+      type: 'checkbox',
+      click: () => {
+        showEstimate = !showEstimate
+        mainWindow.webContents.send('show-estimate', showEstimate)
+        mainWindow.setBounds(getPosition(currentPostion, lastStatus, showEstimate))
+      }
+    }))
+    menu.append(new MenuItem({ type: 'separator' }))
+    menu.append(new MenuItem({
+      label: "Quit",
+      click: () => {
+        app.quit()
+      }
+    }))
+  })
 
   mainWindow.webContents.on('context-menu', (event) => {
     menu.popup()
