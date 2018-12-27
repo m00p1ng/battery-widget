@@ -14,7 +14,7 @@ const renderBattery = (percent, status, estimate) => {
 }
 
 const renderEstimateText = (estimate, status) => {
-  const notShowStatus = ['charged', 'AC attached', 'charging', 'finishing charge']
+  const notShowStatus = ['AC attached', 'finishing charge']
 
   if (notShowStatus.includes(status)) {
     return ''
@@ -26,7 +26,12 @@ const renderEstimateText = (estimate, status) => {
   }
 }
 
-const Battery = ({ battery, showEstimate }) => {
+const isShowEstimate = ({ showBatteryEstimate, showChargeEstimate, status }) => {
+  return (showBatteryEstimate && status === 'discharging') ||
+    (showChargeEstimate && (status === 'charging' || status === 'charged'))
+}
+
+const Battery = ({ battery, showBatteryEstimate, showChargeEstimate }) => {
   const { percentage, status, estimate } = battery
   return (
     <div className="battery-wrapper">
@@ -34,7 +39,7 @@ const Battery = ({ battery, showEstimate }) => {
       <span id="battery-percent">
         {percentage}%
       </span>
-      {showEstimate ?
+      {isShowEstimate({ showBatteryEstimate, showChargeEstimate, status }) ?
         <span id="battery-estimate">
           {renderEstimateText(estimate, status)}
         </span> : null

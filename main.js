@@ -10,7 +10,7 @@ const windowEstimateWidth = 220;
 
 const createWindow = () => {
   const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize
-  app.setName("Battery Widget")
+  app.setName('Battery Widget')
   mainWindow = new BrowserWindow({
     width: windowWidth,
     height: windowHeight,
@@ -33,30 +33,41 @@ const createWindow = () => {
   })
 }
 
-const getPosition = (position, batteryStatus, showEstimate = false) => {
+const isShowEstimate = ({ showBatteryEstimate, showChargeEstimate, batteryStatus: status }) => {
+  return ((showBatteryEstimate && status === 'discharging')) ||
+    (showChargeEstimate && (status === 'charging' || status === 'charged'))
+}
+
+const getPosition = ({ position, batteryStatus, showBatteryEstimate, showChargeEstimate }) => {
   const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize
+  const condition = {
+    showBatteryEstimate,
+    showChargeEstimate,
+    batteryStatus,
+  }
+
   switch (position) {
-    case "Top Left":
-      if (batteryStatus === 'discharging' && showEstimate) {
+    case 'Top Left':
+      if (isShowEstimate(condition)) {
         return { x: 0, y: 0, width: windowEstimateWidth }
       } else {
         return { x: 0, y: 0, width: windowWidth }
       }
-    case "Top Right":
-      if (batteryStatus === 'discharging' && showEstimate) {
+    case 'Top Right':
+      if (isShowEstimate(condition)) {
         return { x: width - windowEstimateWidth, y: 0, width: windowEstimateWidth }
       } else {
         return { x: width - windowWidth, y: 0, width: windowWidth }
       }
-    case "Bottom Left":
-      if (batteryStatus === 'discharging' && showEstimate) {
+    case 'Bottom Left':
+      if (isShowEstimate(condition)) {
         return { x: 0, y: height - windowHeight, width: windowEstimateWidth }
       } else {
         return { x: 0, y: height - windowHeight, width: windowWidth }
       }
-    case "Bottom Right":
+    case 'Bottom Right':
     default:
-      if (batteryStatus === 'discharging' && showEstimate) {
+      if (isShowEstimate(condition)) {
         return { x: width - windowEstimateWidth, y: height - windowHeight, width: windowEstimateWidth }
       } else {
         return { x: width - windowWidth, y: height - windowHeight, width: windowWidth }
@@ -66,9 +77,10 @@ const getPosition = (position, batteryStatus, showEstimate = false) => {
 
 app.on('ready', () => {
   let lastStatus = 'charged'
-  let currentPostion = 'Bottom Right'
+  let currentPosition = 'Bottom Right'
 
-  let showEstimate = false
+  let showBatteryEstimate = false
+  let showChargeEstimate = false
 
   createWindow()
   const URL = (process.env.NODE_ENV !== 'development') ?
@@ -83,7 +95,12 @@ app.on('ready', () => {
       const { status } = result
 
       if (status !== lastStatus) {
-        mainWindow.setBounds(getPosition(currentPostion, status, showEstimate))
+        mainWindow.setBounds(getPosition({
+          currentPosition,
+          batteryStatus: status,
+          showBatteryEstimate,
+          showChargeEstimate,
+        }))
       }
       lastStatus = status
     })
@@ -97,8 +114,13 @@ app.on('ready', () => {
     menu.append(new MenuItem({
       label: pos,
       click: () => {
-        mainWindow.setBounds(getPosition(pos, lastStatus, showEstimate))
-        currentPostion = pos
+        mainWindow.setBounds(getPosition({
+          pos,
+          batteryStatus: lastStatus,
+          showBatteryEstimate,
+          showChargeEstimate,
+        }))
+        currentPosition = pos
       }
     }))
   })
@@ -107,16 +129,40 @@ app.on('ready', () => {
     menu.append(new MenuItem({ type: 'separator' }))
     menu.append(new MenuItem({
       label: 'Show Estimate',
+      enabled: false,
+    }))
+    menu.append(new MenuItem({
+      label: 'Battery Time',
       type: 'checkbox',
       click: () => {
-        showEstimate = !showEstimate
-        mainWindow.webContents.send('show-estimate', showEstimate)
-        mainWindow.setBounds(getPosition(currentPostion, lastStatus, showEstimate))
+        showBatteryEstimate = !showBatteryEstimate
+        mainWindow.webContents.send('show-battery-estimate', showBatteryEstimate)
+        mainWindow.setBounds(getPosition({
+          currentPosition,
+          batteryStatus: lastStatus,
+          showBatteryEstimate,
+          showChargeEstimate
+        }))
       }
     }))
+    menu.append(new MenuItem({
+      label: 'Charging Time',
+      type: 'checkbox',
+      click: () => {
+        showChargeEstimate = !showChargeEstimate
+        mainWindow.webContents.send('show-charge-estimate', showChargeEstimate)
+        mainWindow.setBounds(getPosition({
+          currentPosition,
+          batteryStatus: lastStatus,
+          showBatteryEstimate,
+          showChargeEstimate,
+        }))
+      }
+    }))
+
     menu.append(new MenuItem({ type: 'separator' }))
     menu.append(new MenuItem({
-      label: "Quit",
+      label: 'Quit',
       click: () => {
         app.quit()
       }

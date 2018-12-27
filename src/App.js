@@ -13,7 +13,8 @@ class App extends Component {
       percentage: '',
       estimate: '',
     },
-    showEstimate: false,
+    showBatteryEstimate: false,
+    showChargeEstimate: false,
   }
 
   componentDidMount() {
@@ -21,18 +22,26 @@ class App extends Component {
       this.setState({ battery: message })
     })
 
-    ipcRenderer.on("show-estimate", (_event, message) => {
-      this.setState({ showEstimate: message })
-      console.log(this.state.showEstimate)
+    ipcRenderer.on("show-battery-estimate", (_event, message) => {
+      this.setState({ showBatteryEstimate: message })
+    })
+    ipcRenderer.on("show-charge-estimate", (_event, message) => {
+      this.setState({ showChargeEstimate: message })
     })
   }
 
   render() {
+    const { battery, showBatteryEstimate, showChargeEstimate } = this.state
+
     return (
       <div className="App">
         <Clock ticking={true} format={'ddd HH:mm'} />
-        {this.state.battery.percentage !== '' ?
-          <Battery battery={this.state.battery} showEstimate={this.state.showEstimate} /> :
+        {battery.percentage !== '' ?
+          <Battery
+            battery={battery}
+            showBatteryEstimate={showBatteryEstimate}
+            showChargeEstimate={showChargeEstimate}
+          /> :
           null
         }
       </div>
