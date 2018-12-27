@@ -8,9 +8,7 @@
   justify-content: center;
 }
 
-#battery-image {
-  height: 18px;
-  width: 33px;
+#battery-icon {
   margin-left: 0.6rem;
 }
 

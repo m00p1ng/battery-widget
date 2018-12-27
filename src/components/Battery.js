@@ -1,51 +1,60 @@
 import React from 'react'
 
-import NormalBattery from './NormalBattery'
-import ChargingBattery from './ChargingBattery'
-import '../assets/styles.css'
+const Battery = ({ percentage, status, estimate }) => (
+  <svg id="battery-icon" width="33px" height="18px" viewBox="0 0 129 70" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
+    <title>Battery</title>
+    <defs>
+      <rect id="path-1" x="112" y="19" width="12" height="22"></rect>
+    </defs>
+    <g id="Battery" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+      <Percentage percent={percentage} />
+      <BatteryOutline />
+      {renderLightning({ status, estimate })}
+    </g>
+  </svg>
+)
 
-const renderBattery = (percent, status, estimate) => {
+const renderLightning = ({ status, estimate }) => {
   if (status === 'charged' || status === "AC attached" ||
-    (status === 'charging' && !estimate.includes("0:00 remaining"))
-  ) {
-    return <ChargingBattery percentage={percent} />
-  }
-  return <NormalBattery percentage={percent} />
-}
-
-const renderEstimateText = (estimate, status) => {
-  const notShowStatus = ['AC attached', 'finishing charge']
-
-  if (notShowStatus.includes(status)) {
-    return ''
-  } else if (estimate.includes("no estimate") || estimate.includes("not charging")) {
-    return "(-:--)"
+    (status === 'charging' && !estimate.includes("0:00 remaining"))) {
+    return <Lightning />
   } else {
-    const time = estimate.split(' ')[0]
-    return `(${time})`
+    return null
   }
 }
 
-const isShowEstimate = ({ showBatteryEstimate, showChargeEstimate, status }) => {
-  return (showBatteryEstimate && status === 'discharging') ||
-    (showChargeEstimate && (status === 'charging' || status === 'charged'))
+const Percentage = ({ percent }) => {
+  let color
+  if (percent > 80) {
+    color = '#56AA29'
+  } else if (percent > 60) {
+    color = '#9CD22D'
+  } else if (percent > 40) {
+    color = '#FDD835'
+  } else if (percent > 20) {
+    color = '#FF8700'
+  } else {
+    color = '#D0021B'
+  }
+
+  return <rect id="Rectangle" fill={color} x="14" y="17" width={87 * percent / 100} height="36" rx="3"></rect>
 }
 
-const Battery = ({ battery, showBatteryEstimate, showChargeEstimate }) => {
-  const { percentage, status, estimate } = battery
-  return (
-    <div className="battery-wrapper">
-      {renderBattery(percentage, status, estimate)}
-      <span id="battery-percent">
-        {percentage}%
-      </span>
-      {isShowEstimate({ showBatteryEstimate, showChargeEstimate, status }) ?
-        <span id="battery-estimate">
-          {renderEstimateText(estimate, status)}
-        </span> : null
-      }
-    </div>
-  )
-}
+const Lightning = () => (
+  <g id="Lightning/Black" transform="translate(40.000000, -2.000000)" fill="#FFE010" stroke="#000000" stroke-opacity="0.158825861" stroke-width="2">
+    <path d="M20.3616433,33.6790437 L35.5335852,33.6790437 L4.42513951,74.0313343 L16.5448499,42.4669513 L0.507257113,42.4669513 L31.1064872,1.41955907 L20.3616433,33.6790437 Z" id="lightning"></path>
+  </g>
+)
+
+const BatteryOutline = () => (
+  <g id="Battery_Border/Black" transform="translate(2.000000, 5.000000)">
+    <rect id="Rectangle" stroke="#FFFFFF" stroke-width="8" x="4" y="4" width="102" height="52" rx="12"></rect>
+    <mask id="mask-2" fill="white">
+      <use xlinkHref="#path-1"></use>
+    </mask>
+    <g id="Rectangle"></g>
+    <circle id="Oval" fill="#FFFFFF" fill-rule="evenodd" mask="url(#mask-2)" cx="113" cy="30" r="11"></circle>
+  </g>
+)
 
 export default Battery

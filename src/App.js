@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Clock from 'react-live-clock';
+import BatterySection from './components/BatterySection'
 
-import Battery from './components/Battery'
 import './assets/styles.css'
 
 const { ipcRenderer } = window.require('electron')
@@ -37,7 +37,7 @@ class App extends Component {
       <div className="App">
         <Clock ticking={true} format={'ddd HH:mm'} />
         {battery.percentage !== '' ?
-          <Battery
+          <BatterySection
             battery={battery}
             showBatteryEstimate={showBatteryEstimate}
             showChargeEstimate={showChargeEstimate}
