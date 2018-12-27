@@ -1,5 +1,6 @@
 const electron = require('electron')
 const { app, BrowserWindow, MenuItem, Menu } = electron
+const settings = require('electron-settings');
 const BatteryLevel = require('macos-battery-level')
 const path = require('path')
 
@@ -14,11 +15,10 @@ const windowPosition = {
   BOTTOM_RIGHT: 3,
 }
 
-let lastStatus = 'charged'
-let currentPosition = windowPosition.BOTTOM_RIGHT
-let showBatteryEstimate = false
-let showChargeEstimate = false
-let batteryObservable
+let lastStatus = ''
+let currentPosition
+let showBatteryEstimate
+let showChargeEstimate
 
 const createWindow = () => {
   const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize
@@ -50,18 +50,17 @@ const createContextMenu = () => {
   const positionName = ['Top Left', 'Top Right', 'Bottom Left', 'Bottom Right']
 
   Object.values(windowPosition).forEach((pos) => {
-    console.log(pos)
     menu.append(new MenuItem({
       label: positionName[pos],
       click: () => {
-        const pst = getPosition({
+        mainWindow.setBounds(getPosition({
           position: pos,
           batteryStatus: lastStatus,
           showBatteryEstimate,
           showChargeEstimate,
-        })
-        mainWindow.setBounds(pst)
+        }))
         currentPosition = pos
+        settings.set('position', pos)
       }
     }))
   })
@@ -74,8 +73,10 @@ const createContextMenu = () => {
   menu.append(new MenuItem({
     label: 'Battery Time',
     type: 'checkbox',
+    checked: showBatteryEstimate,
     click: () => {
       showBatteryEstimate = !showBatteryEstimate
+      settings.set('estimate.battery', showBatteryEstimate)
       mainWindow.webContents.send('show-battery-estimate', showBatteryEstimate)
       mainWindow.setBounds(getPosition({
         currentPosition,
@@ -89,8 +90,10 @@ const createContextMenu = () => {
   menu.append(new MenuItem({
     label: 'Charging Time',
     type: 'checkbox',
+    checked: showChargeEstimate,
     click: () => {
       showChargeEstimate = !showChargeEstimate
+      settings.set('estimate.charging', showChargeEstimate)
       mainWindow.webContents.send('show-charge-estimate', showChargeEstimate)
       mainWindow.setBounds(getPosition({
         currentPosition,
@@ -156,7 +159,24 @@ const getPosition = ({ position, batteryStatus, showBatteryEstimate, showChargeE
   }
 }
 
+const initSetting = () => {
+  if (!settings.has('estimate')) {
+    settings.set('estimate', {
+      battery: false,
+      charging: false,
+    })
+  }
+  if (!settings.has('position')) {
+    settings.set('position', windowPosition.BOTTOM_RIGHT)
+  }
+
+  currentPosition = settings.get('position')
+  showBatteryEstimate = settings.get('estimate.battery')
+  showChargeEstimate = settings.get('estimate.charging')
+}
+
 app.on('ready', () => {
+  initSetting()
   createWindow()
   const URL = (process.env.NODE_ENV !== 'development') ?
     `file://${path.join(__dirname, './build/index.html')}` :
@@ -167,8 +187,10 @@ app.on('ready', () => {
   mainWindow.webContents.on('did-finish-load', () => {
     createContextMenu()
     app.dock.hide()
+    mainWindow.webContents.send('show-charge-estimate', showChargeEstimate)
+    mainWindow.webContents.send('show-battery-estimate', showBatteryEstimate)
 
-    batteryObservable = BatteryLevel().subscribe((result) => {
+    BatteryLevel().subscribe((result) => {
       mainWindow.webContents.send('battery-level', result)
       const { status } = result
 
@@ -183,15 +205,4 @@ app.on('ready', () => {
       lastStatus = status
     }, () => { })
   })
-})
-
-app.on('window-all-closed', () => {
-  batteryObservable.unsubscribe()
-  app.quit()
-})
-
-app.on('activate', () => {
-  if (mainWindow === null) {
-    createWindow()
-  }
 })
