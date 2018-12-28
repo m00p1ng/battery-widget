@@ -51,6 +51,7 @@ const createWindow = () => {
     focusable: false,
     resizable: false,
     alwaysOnTop: true,
+    hasShadow: false,
     webPreferences: {
       backgroundThrottling: false,
       nodeIntegration: true,
@@ -71,35 +72,49 @@ const createContextMenu = () => {
   const menu = new Menu()
   const positionName = ['Top Left', 'Top Right', 'Bottom Left', 'Bottom Right']
 
-  Object.values(windowPosition).forEach(pos => {
-    menu.append(new MenuItem({
-      label: positionName[pos],
-      type: 'radio',
-      checked: pos === config.position,
-      click: () => {
-        mainWindow.setBounds(getPosition({
-          position: pos,
-          batteryStatus: lastStatus,
-        }))
-        setToCurrent('position', pos)
-      }
-    }))
-  })
-
-  menu.append(new MenuItem({ type: 'separator' }))
-  Object.keys(themePreset).forEach((themeName => {
-    menu.append(new MenuItem({
-      label: themePreset[themeName].name,
-      type: 'radio',
-      checked: themeName === config.theme,
-      click: () => {
-        mainWindow.setVibrancy(themeName)
-        setToCurrent('theme', themeName)
-      }
-    }))
+  menu.append(new MenuItem({
+    label: 'Position',
+    submenu: [
+      ...Object.values(windowPosition)
+        .map(pos => new MenuItem({
+          label: positionName[pos],
+          type: 'radio',
+          checked: pos === config.position,
+          click: () => {
+            mainWindow.setBounds(getPosition({
+              position: pos,
+              batteryStatus: lastStatus,
+            }))
+            setToCurrent('position', pos)
+          }
+        })),
+      new MenuItem({ type: 'separator' }),
+      new MenuItem({
+        label: 'Lock',
+        type: 'checkbox',
+        checked: config.lock,
+        click: () => {
+          setToCurrent('lock', !config.lock)
+          mainWindow.setMovable(!config.lock)
+        }
+      }),
+    ],
   }))
 
-  menu.append(new MenuItem({ type: 'separator' }))
+  menu.append(new MenuItem({
+    label: 'Theme',
+    submenu: Object.keys(themePreset)
+      .map(themeName => new MenuItem({
+        label: themePreset[themeName].name,
+        type: 'radio',
+        checked: themeName === config.theme,
+        click: () => {
+          mainWindow.setVibrancy(themeName)
+          setToCurrent('theme', themeName)
+        }
+      }))
+  }))
+
   const estimateMenuList = [
     {
       name: 'Battery Time',
@@ -111,21 +126,23 @@ const createContextMenu = () => {
     },
   ]
 
-  estimateMenuList.forEach((esMenu) => {
-    menu.append(new MenuItem({
-      label: esMenu.name,
-      type: 'checkbox',
-      checked: config[esMenu.field],
-      click: () => {
-        setToCurrent(esMenu.field, !config[esMenu.field])
-        mainWindow.webContents.send(`show-${esMenu.field}`, config[esMenu.field])
-        mainWindow.setBounds(getPosition({
-          position: config.position,
-          batteryStatus: lastStatus,
-        }))
-      }
-    }))
-  })
+  menu.append(new MenuItem({
+    label: 'Estimate',
+    submenu: estimateMenuList
+      .map(esMenu => new MenuItem({
+        label: esMenu.name,
+        type: 'checkbox',
+        checked: config[esMenu.field],
+        click: () => {
+          setToCurrent(esMenu.field, !config[esMenu.field])
+          mainWindow.webContents.send(`show-${esMenu.field}`, config[esMenu.field])
+          mainWindow.setBounds(getPosition({
+            position: config.position,
+            batteryStatus: lastStatus,
+          }))
+        }
+      }))
+  }))
 
   menu.append(new MenuItem({ type: 'separator' }))
   menu.append(new MenuItem({

@@ -1,4 +1,4 @@
-.App {
+.app {
   color: white;
   font-family: Helvetica, sans-serif;
   cursor: pointer;
@@ -40,6 +40,6 @@ body {
 *::before {
   -webkit-user-select: none;
   -webkit-user-drag: none;
-  -webkit-app-region: no-drag;
+  -webkit-app-region: drag;
   cursor: default;
 }
