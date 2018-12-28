@@ -26,18 +26,22 @@ const createContextMenu = (mainWindow) => {
           type: 'radio',
           checked: pos === global.config.position,
           click: () => {
+            const [x, y] = mainWindow.getPosition()
             mainWindow.setBounds(getPosition({
               position: pos,
               batteryStatus: global.lastStatus,
+              timerEnable: global.timerEnable,
+              customPosition: { x, y },
             }))
             setToCurrent('position', pos)
             mainWindow.setMovable(false)
-            setToCurrent('lock', true)
+            global.lock = true
             menu.getMenuItemById('lock-position').checked = true
           },
         })),
       new MenuItem({
         label: 'Custom',
+        id: 'custom-position',
         type: 'radio',
         checked: windowPosition.CUSTOM === global.config.position,
         click: () => {
@@ -46,10 +50,11 @@ const createContextMenu = (mainWindow) => {
             position: windowPosition.CUSTOM,
             batteryStatus: global.lastStatus,
             customPosition: { x, y },
+            timerEnable: global.timerEnable,
           }))
           setToCurrent('position', windowPosition.CUSTOM)
           mainWindow.setMovable(true)
-          setToCurrent('lock', false)
+          global.lock = false
           menu.getMenuItemById('lock-position').checked = false
         }
       }),
@@ -58,10 +63,10 @@ const createContextMenu = (mainWindow) => {
         label: 'Lock',
         id: 'lock-position',
         type: 'checkbox',
-        checked: global.config.lock,
+        checked: global.lock,
         click: () => {
-          setToCurrent('lock', !global.config.lock)
-          mainWindow.setMovable(!global.config.lock)
+          global.lock = !global.lock
+          mainWindow.setMovable(!global.lock)
         },
       }),
     ],
@@ -100,14 +105,36 @@ const createContextMenu = (mainWindow) => {
         type: 'checkbox',
         checked: global.config[esMenu.field],
         click: () => {
+          const [x, y] = mainWindow.getPosition()
           setToCurrent(esMenu.field, !global.config[esMenu.field])
           mainWindow.webContents.send(`show-${esMenu.field}`, global.config[esMenu.field])
           mainWindow.setBounds(getPosition({
             position: global.config.position,
             batteryStatus: global.lastStatus,
+            timerEnable: global.timerEnable,
+            customPosition: { x, y },
           }))
         },
       })),
+  }))
+
+  menu.append(new MenuItem({ type: 'separator' }))
+  menu.append(new MenuItem({
+    label: 'Timer',
+    type: 'checkbox',
+    checked: global.timerEnable,
+    click: () => {
+      const [x, y] = mainWindow.getPosition()
+      global.timerEnable = !global.timerEnable
+
+      mainWindow.webContents.send('timer', global.timerEnable)
+      mainWindow.setBounds(getPosition({
+        position: global.config.position,
+        batteryStatus: global.lastStatus,
+        timerEnable: global.timerEnable,
+        customPosition: { x, y },
+      }))
+    }
   }))
 
   menu.append(new MenuItem({ type: 'separator' }))

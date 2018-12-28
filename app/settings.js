@@ -8,7 +8,6 @@ const initSetting = () => {
     position: windowPosition.BOTTOM_RIGHT,
     theme: 'ultra-dark',
     transparent: true,
-    lock: true,
     x: 0,
     y: 0,
   }

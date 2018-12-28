@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Clock from 'react-live-clock';
 import BatterySection from './components/BatterySection'
+import Timer from './components/Timer'
 
 import './assets/styles.css'
 
@@ -15,11 +16,15 @@ class App extends Component {
     },
     showBatteryEstimate: false,
     showChargeEstimate: false,
+    timerEnable: false,
   }
 
   componentDidMount() {
     ipcRenderer.on('battery', (event, battery) => {
       this.setState({ battery })
+    })
+    ipcRenderer.on('timer', (event, timerEnable) => {
+      this.setState({ timerEnable })
     })
 
     ipcRenderer.on('show-batteryEstimate', (event, showBatteryEstimate) => {
@@ -31,19 +36,22 @@ class App extends Component {
   }
 
   render() {
-    const { battery, showBatteryEstimate, showChargeEstimate } = this.state
+    const { battery, showBatteryEstimate, showChargeEstimate, timerEnable } = this.state
 
     return (
       <div className="app">
-        <Clock ticking={true} format={'ddd HH:mm'} />
-        {battery.percentage !== '' ?
-          <BatterySection
-            battery={battery}
-            showBatteryEstimate={showBatteryEstimate}
-            showChargeEstimate={showChargeEstimate}
-          /> :
-          null
-        }
+        {timerEnable && <Timer />}
+        <div id="widget-wrapper">
+          <Clock ticking={true} format={'ddd HH:mm'} />
+          {battery.percentage !== '' ?
+            <BatterySection
+              battery={battery}
+              showBatteryEstimate={showBatteryEstimate}
+              showChargeEstimate={showChargeEstimate}
+            /> :
+            null
+          }
+        </div>
       </div>
     )
   }

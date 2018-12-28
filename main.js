@@ -6,11 +6,14 @@ const createContextMenu = require('./app/contextMenu')
 const settings = require('electron-settings')
 const initSetting = require('./app/settings')
 const {
-  windowHeight,
   getPosition,
+  windowHeight,
+  windowTimerHeight,
 } = require('./app/sharedVariable')
 
 let mainWindow
+global.timerEnable = false
+global.lock = true
 
 const createWindow = () => {
   app.setName('Battery Widget')
@@ -24,7 +27,6 @@ const createWindow = () => {
     }),
     x: global.config.x,
     y: global.config.y,
-    height: windowHeight,
     focusable: false,
     resizable: false,
     alwaysOnTop: true,
@@ -35,6 +37,7 @@ const createWindow = () => {
     },
     frame: false,
     vibrancy: global.config.theme,
+    movable: false,
   })
 
   mainWindow.setVisibleOnAllWorkspaces(true)
@@ -45,7 +48,10 @@ const createWindow = () => {
 }
 
 app.on('before-quit', () => {
-  const [x, y] = mainWindow.getPosition()
+  let [x, y] = mainWindow.getPosition()
+  if (global.timerEnable) {
+    y += (windowTimerHeight - windowHeight)
+  }
   settings.set('x', x)
   settings.set('y', y)
 })
@@ -76,7 +82,8 @@ app.on('ready', () => {
           customPosition: {
             x: global.config.x,
             y: global.config.y,
-          }
+          },
+          timerEnable: global.timerEnable,
         }))
       }
       global.lastStatus = status

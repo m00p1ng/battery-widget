@@ -2,6 +2,7 @@ const electron = require('electron')
 const { STATUS: BatteryStatus } = require('macos-battery-level')
 
 const windowHeight = 34
+const windowTimerHeight = 75
 const windowWidth = 180
 const windowEstimateWidth = 220;
 const windowPosition = {
@@ -37,41 +38,92 @@ const isShowEstimate = ({ batteryStatus: status }) => (
   (!notShowStatus.includes(status))
 )
 
-const getPosition = ({ position, batteryStatus, customPosition }) => {
+const getPosition = ({ position, batteryStatus, customPosition, timerEnable }) => {
   const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize
   const showEstimate = isShowEstimate({ batteryStatus })
+  const currentHeight = timerEnable ? windowTimerHeight : windowHeight
 
   switch (position) {
     case windowPosition.CUSTOM:
       if (showEstimate) {
-        return { x: customPosition.x, y: customPosition.y, width: windowEstimateWidth }
+        return {
+          x: customPosition.x,
+          y: customPosition.y,
+          width: windowEstimateWidth,
+          height: currentHeight,
+        }
       } else {
-        return { x: customPosition.x, y: customPosition.y, width: windowWidth }
+        return {
+          x: customPosition.x,
+          y: customPosition.y,
+          width: windowWidth,
+          height: currentHeight,
+        }
       }
     case windowPosition.TOP_LEFT:
       if (showEstimate) {
-        return { x: 0, y: 0, width: windowEstimateWidth }
+        return {
+          x: 0,
+          y: 0,
+          width: windowEstimateWidth,
+          height: currentHeight,
+        }
       } else {
-        return { x: 0, y: 0, width: windowWidth }
+        return {
+          x: 0,
+          y: 0,
+          width: windowWidth,
+          height: currentHeight,
+        }
       }
     case windowPosition.TOP_RIGHT:
       if (showEstimate) {
-        return { x: width - windowEstimateWidth, y: 0, width: windowEstimateWidth }
+        return {
+          x: width - windowEstimateWidth,
+          y: 0,
+          width: windowEstimateWidth,
+          height: currentHeight,
+        }
       } else {
-        return { x: width - windowWidth, y: 0, width: windowWidth }
+        return {
+          x: width - windowWidth,
+          y: 0,
+          width: windowWidth,
+          height: currentHeight,
+        }
       }
     case windowPosition.BOTTOM_LEFT:
       if (showEstimate) {
-        return { x: 0, y: height - windowHeight, width: windowEstimateWidth }
+        return {
+          x: 0,
+          y: height - currentHeight,
+          width: windowEstimateWidth,
+          height: currentHeight,
+        }
       } else {
-        return { x: 0, y: height - windowHeight, width: windowWidth }
+        return {
+          x: 0,
+          y: height - currentHeight,
+          width: windowWidth,
+          height: currentHeight,
+        }
       }
     case windowPosition.BOTTOM_RIGHT:
     default:
       if (showEstimate) {
-        return { x: width - windowEstimateWidth, y: height - windowHeight, width: windowEstimateWidth }
+        return {
+          x: width - windowEstimateWidth,
+          y: height - currentHeight,
+          width: windowEstimateWidth,
+          height: currentHeight,
+        }
       } else {
-        return { x: width - windowWidth, y: height - windowHeight, width: windowWidth }
+        return {
+          x: width - windowWidth,
+          y: height - currentHeight,
+          width: windowWidth,
+          height: currentHeight,
+        }
       }
   }
 }
@@ -79,6 +131,7 @@ const getPosition = ({ position, batteryStatus, customPosition }) => {
 module.exports = {
   windowEstimateWidth,
   windowHeight,
+  windowTimerHeight,
   windowPosition,
   windowWidth,
   themePreset,
