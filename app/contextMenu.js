@@ -33,7 +33,7 @@ const createContextMenu = (mainWindow) => {
             setToCurrent('position', pos)
             mainWindow.setMovable(false)
             setToCurrent('lock', true)
-            menu.items[0].submenu.items[6].checked = false
+            menu.getMenuItemById('lock-position').checked = true
           },
         })),
       new MenuItem({
@@ -50,12 +50,13 @@ const createContextMenu = (mainWindow) => {
           setToCurrent('position', windowPosition.CUSTOM)
           mainWindow.setMovable(true)
           setToCurrent('lock', false)
-          menu.items[0].submenu.items[6].checked = false
+          menu.getMenuItemById('lock-position').checked = false
         }
       }),
       new MenuItem({ type: 'separator' }),
       new MenuItem({
         label: 'Lock',
+        id: 'lock-position',
         type: 'checkbox',
         checked: global.config.lock,
         click: () => {
