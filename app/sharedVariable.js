@@ -9,6 +9,7 @@ const windowPosition = {
   TOP_RIGHT: 1,
   BOTTOM_LEFT: 2,
   BOTTOM_RIGHT: 3,
+  CUSTOM: 4,
 }
 const themePreset = {
   'ultra-dark': {
@@ -36,11 +37,17 @@ const isShowEstimate = ({ batteryStatus: status }) => (
   (!notShowStatus.includes(status))
 )
 
-const getPosition = ({ position, batteryStatus }) => {
+const getPosition = ({ position, batteryStatus, customPosition }) => {
   const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize
   const showEstimate = isShowEstimate({ batteryStatus })
 
   switch (position) {
+    case windowPosition.CUSTOM:
+      if (showEstimate) {
+        return { x: customPosition.x, y: customPosition.y, width: windowEstimateWidth }
+      } else {
+        return { x: customPosition.x, y: customPosition.y, width: windowWidth }
+      }
     case windowPosition.TOP_LEFT:
       if (showEstimate) {
         return { x: 0, y: 0, width: windowEstimateWidth }

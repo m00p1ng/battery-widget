@@ -12,7 +12,7 @@ const setToCurrent = (field, value) => {
   settings.set(field, value)
 }
 
-const createContextMenu = ({ mainWindow }) => {
+const createContextMenu = (mainWindow) => {
   const menu = new Menu()
   const positionName = ['Top Left', 'Top Right', 'Bottom Left', 'Bottom Right']
 
@@ -20,6 +20,7 @@ const createContextMenu = ({ mainWindow }) => {
     label: 'Position',
     submenu: [
       ...Object.values(windowPosition)
+        .slice(0, 4)
         .map(pos => new MenuItem({
           label: positionName[pos],
           type: 'radio',
@@ -30,8 +31,28 @@ const createContextMenu = ({ mainWindow }) => {
               batteryStatus: global.lastStatus,
             }))
             setToCurrent('position', pos)
-          }
+            mainWindow.setMovable(false)
+            setToCurrent('lock', true)
+            menu.items[0].submenu.items[6].checked = false
+          },
         })),
+      new MenuItem({
+        label: 'Custom',
+        type: 'radio',
+        checked: windowPosition.CUSTOM === global.config.position,
+        click: () => {
+          const [x, y] = mainWindow.getPosition()
+          mainWindow.setBounds(getPosition({
+            position: windowPosition.CUSTOM,
+            batteryStatus: global.lastStatus,
+            customPosition: { x, y },
+          }))
+          setToCurrent('position', windowPosition.CUSTOM)
+          mainWindow.setMovable(true)
+          setToCurrent('lock', false)
+          menu.items[0].submenu.items[6].checked = false
+        }
+      }),
       new MenuItem({ type: 'separator' }),
       new MenuItem({
         label: 'Lock',
@@ -40,7 +61,7 @@ const createContextMenu = ({ mainWindow }) => {
         click: () => {
           setToCurrent('lock', !global.config.lock)
           mainWindow.setMovable(!global.config.lock)
-        }
+        },
       }),
     ],
   }))
@@ -55,8 +76,8 @@ const createContextMenu = ({ mainWindow }) => {
         click: () => {
           mainWindow.setVibrancy(themeName)
           setToCurrent('theme', themeName)
-        }
-      }))
+        },
+      })),
   }))
 
   const estimateMenuList = [
@@ -84,8 +105,8 @@ const createContextMenu = ({ mainWindow }) => {
             position: global.config.position,
             batteryStatus: global.lastStatus,
           }))
-        }
-      }))
+        },
+      })),
   }))
 
   menu.append(new MenuItem({ type: 'separator' }))

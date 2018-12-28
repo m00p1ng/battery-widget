@@ -3,6 +3,7 @@ const { app, BrowserWindow } = electron
 const BatteryLevel = require('macos-battery-level')
 const path = require('path')
 const createContextMenu = require('./app/contextMenu')
+const settings = require('electron-settings')
 const initSetting = require('./app/settings')
 const {
   windowHeight,
@@ -10,13 +11,19 @@ const {
 } = require('./app/sharedVariable')
 
 let mainWindow
-global.lastStatus = null
-global.config = null
 
 const createWindow = () => {
   app.setName('Battery Widget')
   mainWindow = new BrowserWindow({
-    ...getPosition({ position: global.config.position, batteryStatus: '' }),
+    ...getPosition({
+      position: global.config.position,
+      customPosition: {
+        x: global.config.x,
+        y: global.config.y,
+      }
+    }),
+    x: global.config.x,
+    y: global.config.y,
     height: windowHeight,
     focusable: false,
     resizable: false,
@@ -27,7 +34,7 @@ const createWindow = () => {
       nodeIntegration: true,
     },
     frame: false,
-    vibrancy: global.config.transparent ? global.config.theme : null,
+    vibrancy: global.config.theme,
   })
 
   mainWindow.setVisibleOnAllWorkspaces(true)
@@ -36,6 +43,12 @@ const createWindow = () => {
     mainWindow = null
   })
 }
+
+app.on('before-quit', () => {
+  const [x, y] = mainWindow.getPosition()
+  settings.set('x', x)
+  settings.set('y', y)
+})
 
 app.on('ready', () => {
   global.config = initSetting()
@@ -47,7 +60,7 @@ app.on('ready', () => {
   mainWindow.loadURL(URL)
 
   mainWindow.webContents.on('did-finish-load', () => {
-    createContextMenu({ mainWindow })
+    createContextMenu(mainWindow)
     app.dock.hide()
     mainWindow.webContents.send('show-chargingEstimate', global.config.chargingEstimate)
     mainWindow.webContents.send('show-batteryEstimate', global.config.batteryEstimate)
@@ -60,6 +73,10 @@ app.on('ready', () => {
         mainWindow.setBounds(getPosition({
           position: global.config.position,
           batteryStatus: status,
+          customPosition: {
+            x: global.config.x,
+            y: global.config.y,
+          }
         }))
       }
       global.lastStatus = status
