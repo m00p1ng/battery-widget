@@ -16,13 +16,7 @@ const windowPosition = {
 }
 
 let lastStatus = ''
-let config = {
-  position: null,
-  showBatteryEstimate: null,
-  showChargeEstimate: null,
-  transparent: null,
-  theme: null,
-}
+let config
 
 let themePreset = {
   'ultra-dark': {
@@ -44,8 +38,6 @@ let themePreset = {
 }
 
 const createWindow = () => {
-  initSetting()
-
   app.setName('Battery Widget')
   mainWindow = new BrowserWindow({
     ...getPosition({ position: config.position, batteryStatus: '' }),
@@ -113,11 +105,11 @@ const createContextMenu = () => {
   menu.append(new MenuItem({
     label: 'Battery Time',
     type: 'checkbox',
-    checked: config.showBatteryEstimate,
+    checked: config.batteryEstimate,
     click: () => {
-      config.showBatteryEstimate = !config.showBatteryEstimate
-      settings.set('estimate.battery', config.showBatteryEstimate)
-      mainWindow.webContents.send('show-battery-estimate', config.showBatteryEstimate)
+      config.batteryEstimate = !config.batteryEstimate
+      settings.set('batteryEstimate', config.batteryEstimate)
+      mainWindow.webContents.send('show-battery-estimate', config.batteryEstimate)
       mainWindow.setBounds(getPosition({
         position: config.position,
         batteryStatus: lastStatus,
@@ -128,11 +120,11 @@ const createContextMenu = () => {
   menu.append(new MenuItem({
     label: 'Charging Time',
     type: 'checkbox',
-    checked: config.showChargeEstimate,
+    checked: config.chargingEstimate,
     click: () => {
-      config.showChargeEstimate = !config.showChargeEstimate
-      settings.set('estimate.charging', config.showChargeEstimate)
-      mainWindow.webContents.send('show-charge-estimate', config.showChargeEstimate)
+      config.chargingEstimate = !config.chargingEstimate
+      settings.set('chargingEstimate', config.chargingEstimate)
+      mainWindow.webContents.send('show-charge-estimate', config.chargingEstimate)
       mainWindow.setBounds(getPosition({
         position: config.position,
         batteryStatus: lastStatus,
@@ -154,8 +146,8 @@ const createContextMenu = () => {
 }
 
 const isShowEstimate = ({ batteryStatus: status }) => (
-  (config.showBatteryEstimate && status === 'discharging') ||
-  (config.showChargeEstimate && (status === 'charging' || status === 'charged'))
+  (config.batteryEstimate && status === 'discharging') ||
+  (config.chargingEstimate && (status === 'charging' || status === 'charged'))
 )
 
 const getPosition = ({ position, batteryStatus }) => {
@@ -192,11 +184,12 @@ const getPosition = ({ position, batteryStatus }) => {
 }
 
 const initSetting = () => {
-  if (!settings.has('estimate')) {
-    settings.set('estimate', {
-      battery: false,
-      charging: false,
-    })
+  if (!settings.has('batteryEstimate')) {
+    settings.set('batteryEstimate', false)
+  }
+
+  if (!settings.has('chargingEstimate')) {
+    settings.set('chargingEstimate', false)
   }
 
   if (!settings.has('position')) {
@@ -207,18 +200,16 @@ const initSetting = () => {
     settings.set('theme', 'ultra-dark')
   }
 
-  if (!settings.has('config.transparent')) {
-    settings.set('config.transparent', true)
+  if (!settings.has('transparent')) {
+    settings.set('transparent', true)
   }
 
-  config.position = settings.get('position')
-  config.showBatteryEstimate = settings.get('estimate.battery')
-  config.showChargeEstimate = settings.get('estimate.charging')
-  config.theme = settings.get('theme')
-  config.transparent = settings.get('config.transparent')
+  config = settings.getAll()
+  console.log(config)
 }
 
 app.on('ready', () => {
+  initSetting()
   createWindow()
   const URL = (process.env.NODE_ENV !== 'development') ?
     `file://${path.join(__dirname, './build/index.html')}` :
@@ -229,8 +220,8 @@ app.on('ready', () => {
   mainWindow.webContents.on('did-finish-load', () => {
     createContextMenu()
     app.dock.hide()
-    mainWindow.webContents.send('show-charge-estimate', config.showChargeEstimate)
-    mainWindow.webContents.send('show-battery-estimate', config.showBatteryEstimate)
+    mainWindow.webContents.send('show-charge-estimate', config.chargingEstimate)
+    mainWindow.webContents.send('show-battery-estimate', config.batteryEstimate)
 
     BatteryLevel().subscribe((result) => {
       mainWindow.webContents.send('battery-level', result)
