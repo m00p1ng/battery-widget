@@ -14,11 +14,7 @@ const windowPosition = {
   BOTTOM_LEFT: 2,
   BOTTOM_RIGHT: 3,
 }
-
-let lastStatus = ''
-let config
-
-let themePreset = {
+const themePreset = {
   'ultra-dark': {
     name: 'Ultra Dark',
     backgroundColor: '#000000',
@@ -35,6 +31,14 @@ let themePreset = {
     name: 'Medium Light',
     backgroundColor: '#FFFFFF',
   }
+}
+
+let lastStatus = ''
+let config
+
+const setToCurrent = (field, value) => {
+  config[field] = value
+  settings.set(field, value)
 }
 
 const createWindow = () => {
@@ -73,8 +77,7 @@ const createContextMenu = () => {
           position: pos,
           batteryStatus: lastStatus,
         }))
-        config.position = pos
-        settings.set('position', pos)
+        setToCurrent('position', pos)
       }
     }))
   })
@@ -91,8 +94,7 @@ const createContextMenu = () => {
       checked: themeName === config.theme,
       click: () => {
         mainWindow.setVibrancy(themeName)
-        config.theme = themeName
-        settings.set('theme', themeName)
+        setToCurrent('theme', themeName)
       }
     }))
   }))
@@ -120,8 +122,7 @@ const createContextMenu = () => {
       type: 'checkbox',
       checked: config[esMenu.field],
       click: () => {
-        config[esMenu.field] = !config[esMenu.field]
-        settings.set(esMenu.field, config[esMenu.field])
+        setToCurrent(esMenu.field, !config[esMenu.field])
         mainWindow.webContents.send(`show-${esMenu.field}`, config[esMenu.field])
         mainWindow.setBounds(getPosition({
           position: config.position,
