@@ -2,6 +2,7 @@ const electron = require('electron')
 const { app, BrowserWindow, MenuItem, Menu } = electron
 const settings = require('electron-settings');
 const BatteryLevel = require('macos-battery-level')
+const { STATUS: BatteryStatus } = BatteryLevel
 const path = require('path')
 
 let mainWindow
@@ -17,22 +18,22 @@ const windowPosition = {
 const themePreset = {
   'ultra-dark': {
     name: 'Ultra Dark',
-    backgroundColor: '#000000',
   },
   'dark': {
     name: 'Dark',
-    backgroundColor: '#000000',
   },
   'light': {
     name: 'Light',
-    backgroundColor: '#FFFFFF',
   },
   'medium-light': {
     name: 'Medium Light',
-    backgroundColor: '#FFFFFF',
   }
 }
-const notShowStatus = ['AC attached', 'finishing charge', 'charged']
+const notShowStatus = [
+  BatteryStatus.AC_ATTACHED,
+  BatteryStatus.FINISHING_CHARGE,
+  BatteryStatus.CHARGED,
+]
 
 let lastStatus = ''
 let config
@@ -140,8 +141,8 @@ const createContextMenu = () => {
 }
 
 const isShowEstimate = ({ batteryStatus: status }) => (
-  ((config.batteryEstimate && status === 'discharging') ||
-    (config.chargingEstimate && (status === 'charging' || status === 'charged'))) &&
+  ((config.batteryEstimate && status === BatteryStatus.DISCHARGING) ||
+    (config.chargingEstimate && (status === BatteryStatus.CHARGING || status === BatteryStatus.CHARGED))) &&
   (!notShowStatus.includes(status))
 )
 

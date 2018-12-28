@@ -6271,10 +6271,10 @@ lru-cache@^5.1.1:
   dependencies:
     yallist "^3.0.2"
 
-macos-battery-level@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/macos-battery-level/-/macos-battery-level-1.1.1.tgz#57907e82cb9751d8c8544ee80b655a1520e68421"
-  integrity sha512-nhvjEHh3g0QKdtrbGp0zdmISgIIUyMiCpdHKS+x7lg1EufjIsF9guBmUr1yfpvsYBQT+cZQo5HKwLr/5dNV//g==
+macos-battery-level@^1.1.3:
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/macos-battery-level/-/macos-battery-level-1.1.3.tgz#642f45f936850ee143ac51ab2e33a32c249d93d9"
+  integrity sha512-wTr9GDXwBRJvaZjvMtBiepN+ueAIcgYf5WCLqDGlVmV/UxPBNZsY2x6gHX4iEm6QkolPndCg0beCtGEEKpcYlQ==
   dependencies:
     execa "^1.0.0"
     rxjs "^6.3.3"

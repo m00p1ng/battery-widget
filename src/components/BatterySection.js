@@ -1,9 +1,14 @@
 import React from 'react'
+import { STATUS as BatteryStatus } from 'macos-battery-level'
 
 import Battery from './Battery'
 import '../assets/styles.css'
 
-const notShowStatus = ['AC attached', 'finishing charge', 'charged']
+const notShowStatus = [
+  BatteryStatus.AC_ATTACHED,
+  BatteryStatus.FINISHING_CHARGE,
+  BatteryStatus.CHARGED,
+]
 
 const renderEstimateText = (estimate, status) => {
   if (notShowStatus.includes(status)) {
@@ -15,8 +20,8 @@ const renderEstimateText = (estimate, status) => {
 }
 
 const isShowEstimate = ({ showBatteryEstimate, showChargeEstimate, status }) => (
-  ((showBatteryEstimate && status === 'discharging') ||
-    (showChargeEstimate && (status === 'charging' || status === 'charged'))) &&
+  ((showBatteryEstimate && status === BatteryStatus.DISCHARGING) ||
+    (showChargeEstimate && (status === BatteryStatus.CHARGING || status === BatteryStatus.CHARGED))) &&
   (!notShowStatus.includes(status))
 )
 
