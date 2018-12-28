@@ -3,23 +3,22 @@ import React from 'react'
 import Battery from './Battery'
 import '../assets/styles.css'
 
-const renderEstimateText = (estimate, status) => {
-  const notShowStatus = ['AC attached', 'finishing charge']
+const notShowStatus = ['AC attached', 'finishing charge', 'charged']
 
+const renderEstimateText = (estimate, status) => {
   if (notShowStatus.includes(status)) {
     return ''
-  } else if (estimate.includes("no estimate") || estimate.includes("not charging")) {
-    return "(-:--)"
   } else {
     const time = estimate.split(' ')[0]
     return `(${time})`
   }
 }
 
-const isShowEstimate = ({ showBatteryEstimate, showChargeEstimate, status }) => {
-  return (showBatteryEstimate && status === 'discharging') ||
-    (showChargeEstimate && (status === 'charging' || status === 'charged'))
-}
+const isShowEstimate = ({ showBatteryEstimate, showChargeEstimate, status }) => (
+  ((showBatteryEstimate && status === 'discharging') ||
+    (showChargeEstimate && (status === 'charging' || status === 'charged'))) &&
+  (!notShowStatus.includes(status))
+)
 
 const BatterySection = ({ battery, showBatteryEstimate, showChargeEstimate }) => {
   const { percentage, status, estimate } = battery

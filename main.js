@@ -32,6 +32,7 @@ const themePreset = {
     backgroundColor: '#FFFFFF',
   }
 }
+const notShowStatus = ['AC attached', 'finishing charge', 'charged']
 
 let lastStatus = ''
 let config
@@ -139,8 +140,9 @@ const createContextMenu = () => {
 }
 
 const isShowEstimate = ({ batteryStatus: status }) => (
-  (config.batteryEstimate && status === 'discharging') ||
-  (config.chargingEstimate && (status === 'charging' || status === 'charged'))
+  ((config.batteryEstimate && status === 'discharging') ||
+    (config.chargingEstimate && (status === 'charging' || status === 'charged'))) &&
+  (!notShowStatus.includes(status))
 )
 
 const getPosition = ({ position, batteryStatus }) => {

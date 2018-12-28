@@ -15,8 +15,8 @@ const Battery = ({ percentage, status, estimate }) => (
 )
 
 const renderLightning = ({ status, estimate }) => {
-  if (status === 'charged' || status === "AC attached" ||
-    (status === 'charging' && !estimate.includes("0:00 remaining"))) {
+  const lightningStatus = ['charged', 'AC attached', 'finishing charge']
+  if (lightningStatus.includes(status) || (status === 'charging' && !estimate.includes("0:00 remaining"))) {
     return <Lightning />
   } else {
     return null
