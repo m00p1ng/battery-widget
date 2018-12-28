@@ -65,7 +65,7 @@ const createContextMenu = () => {
   const menu = new Menu()
   const positionName = ['Top Left', 'Top Right', 'Bottom Left', 'Bottom Right']
 
-  Object.values(windowPosition).forEach((pos) => {
+  Object.values(windowPosition).forEach(pos => {
     menu.append(new MenuItem({
       label: positionName[pos],
       click: () => {
@@ -102,35 +102,34 @@ const createContextMenu = () => {
     label: 'Show Estimate',
     enabled: false,
   }))
-  menu.append(new MenuItem({
-    label: 'Battery Time',
-    type: 'checkbox',
-    checked: config.batteryEstimate,
-    click: () => {
-      config.batteryEstimate = !config.batteryEstimate
-      settings.set('batteryEstimate', config.batteryEstimate)
-      mainWindow.webContents.send('show-battery-estimate', config.batteryEstimate)
-      mainWindow.setBounds(getPosition({
-        position: config.position,
-        batteryStatus: lastStatus,
-      }))
-    }
-  }))
 
-  menu.append(new MenuItem({
-    label: 'Charging Time',
-    type: 'checkbox',
-    checked: config.chargingEstimate,
-    click: () => {
-      config.chargingEstimate = !config.chargingEstimate
-      settings.set('chargingEstimate', config.chargingEstimate)
-      mainWindow.webContents.send('show-charge-estimate', config.chargingEstimate)
-      mainWindow.setBounds(getPosition({
-        position: config.position,
-        batteryStatus: lastStatus,
-      }))
-    }
-  }))
+  const estimateMenuList = [
+    {
+      name: 'Battery Time',
+      field: 'batteryEstimate',
+    },
+    {
+      name: 'Charging Time',
+      field: 'chargingEstimate',
+    },
+  ]
+
+  estimateMenuList.forEach((esMenu) => {
+    menu.append(new MenuItem({
+      label: esMenu.name,
+      type: 'checkbox',
+      checked: config[esMenu.field],
+      click: () => {
+        config[esMenu.field] = !config[esMenu.field]
+        settings.set(esMenu.field, config[esMenu.field])
+        mainWindow.webContents.send(`show-${esMenu.field}`, config[esMenu.field])
+        mainWindow.setBounds(getPosition({
+          position: config.position,
+          batteryStatus: lastStatus,
+        }))
+      }
+    }))
+  })
 
   menu.append(new MenuItem({ type: 'separator' }))
   menu.append(new MenuItem({
@@ -184,28 +183,25 @@ const getPosition = ({ position, batteryStatus }) => {
 }
 
 const initSetting = () => {
-  if (!settings.has('batteryEstimate')) {
-    settings.set('batteryEstimate', false)
+  const defaultSetting = {
+    batteryEstimate: false,
+    chargingEstimate: false,
+    postion: windowPosition.BOTTOM_RIGHT,
+    theme: 'ultra-dark',
+    transparent: true,
   }
 
-  if (!settings.has('chargingEstimate')) {
-    settings.set('chargingEstimate', false)
-  }
+  const allSettings = settings.getAll()
+  const defaultKeys = JSON.stringify(Object.keys(defaultSetting))
+  const settingsKeys = JSON.stringify(Object.keys(allSettings))
 
-  if (!settings.has('position')) {
-    settings.set('position', windowPosition.BOTTOM_RIGHT)
+  if (defaultKeys !== settingsKeys) {
+    settings.deleteAll()
+    settings.setAll(defaultSetting)
+    config = defaultSetting
+  } else {
+    config = allSettings
   }
-
-  if (!settings.has('theme')) {
-    settings.set('theme', 'ultra-dark')
-  }
-
-  if (!settings.has('transparent')) {
-    settings.set('transparent', true)
-  }
-
-  config = settings.getAll()
-  console.log(config)
 }
 
 app.on('ready', () => {
@@ -220,11 +216,11 @@ app.on('ready', () => {
   mainWindow.webContents.on('did-finish-load', () => {
     createContextMenu()
     app.dock.hide()
-    mainWindow.webContents.send('show-charge-estimate', config.chargingEstimate)
-    mainWindow.webContents.send('show-battery-estimate', config.batteryEstimate)
+    mainWindow.webContents.send('show-chargingEstimate', config.chargingEstimate)
+    mainWindow.webContents.send('show-batteryEstimate', config.batteryEstimate)
 
     BatteryLevel().subscribe((result) => {
-      mainWindow.webContents.send('battery-level', result)
+      mainWindow.webContents.send('battery', result)
       const { status } = result
 
       if (status !== lastStatus) {

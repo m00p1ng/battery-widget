@@ -18,15 +18,15 @@ class App extends Component {
   }
 
   componentDidMount() {
-    ipcRenderer.on("battery-level", (_event, message) => {
-      this.setState({ battery: message })
+    ipcRenderer.on("battery", (event, battery) => {
+      this.setState({ battery })
     })
 
-    ipcRenderer.on("show-battery-estimate", (_event, message) => {
-      this.setState({ showBatteryEstimate: message })
+    ipcRenderer.on("show-batteryEstimate", (event, showBatteryEstimate) => {
+      this.setState({ showBatteryEstimate })
     })
-    ipcRenderer.on("show-charge-estimate", (_event, message) => {
-      this.setState({ showChargeEstimate: message })
+    ipcRenderer.on("show-chargingEstimate", (event, showChargeEstimate) => {
+      this.setState({ showChargeEstimate })
     })
   }
 
