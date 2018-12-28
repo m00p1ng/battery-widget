@@ -19,6 +19,27 @@ let lastStatus = ''
 let currentPosition
 let showBatteryEstimate
 let showChargeEstimate
+let isTransparent
+let currentTheme
+
+let themePreset = {
+  'ultra-dark': {
+    name: 'Ultra Dark',
+    backgroundColor: '#000',
+  },
+  'dark': {
+    name: 'Dark',
+    backgroundColor: '#000',
+  },
+  'light': {
+    name: 'Light',
+    backgroundColor: '#fff',
+  },
+  'medium-light': {
+    name: 'Medium Light',
+    backgroundColor: '#ff',
+  }
+}
 
 const createWindow = () => {
   initSetting()
@@ -34,7 +55,8 @@ const createWindow = () => {
       backgroundThrottling: false,
     },
     frame: false,
-    vibrancy: 'ultra-dark',
+    vibrancy: isTransparent ? currentTheme : null,
+    backgroundColor: isTransparent ? null : themePreset[currentTheme].backgroundColor,
   })
 
   mainWindow.setVisibleOnAllWorkspaces(true)
@@ -61,6 +83,24 @@ const createContextMenu = () => {
       }
     }))
   })
+
+  menu.append(new MenuItem({ type: 'separator' }))
+  menu.append(new MenuItem({
+    label: 'Theme',
+    enabled: false,
+  }))
+  Object.keys(themePreset).forEach((themeName => {
+    menu.append(new MenuItem({
+      label: themePreset[themeName].name,
+      type: 'radio',
+      checked: themeName === currentTheme,
+      click: () => {
+        mainWindow.setVibrancy(themeName)
+        currentTheme = themeName
+        settings.set('theme', themeName)
+      }
+    }))
+  }))
 
   menu.append(new MenuItem({ type: 'separator' }))
   menu.append(new MenuItem({
@@ -160,9 +200,19 @@ const initSetting = () => {
     settings.set('position', windowPosition.BOTTOM_RIGHT)
   }
 
+  if (!settings.has('theme')) {
+    settings.set('theme', 'ultra-dark')
+  }
+
+  if (!settings.has('isTransparent')) {
+    settings.set('isTransparent', true)
+  }
+
   currentPosition = settings.get('position')
   showBatteryEstimate = settings.get('estimate.battery')
   showChargeEstimate = settings.get('estimate.charging')
+  currentTheme = settings.get('theme')
+  isTransparent = settings.get('isTransparent')
 }
 
 app.on('ready', () => {
