@@ -21,7 +21,7 @@
     "react:start": "BROWSER=none react-scripts start",
     "electron": "NODE_ENV=development electron .",
     "react:build": "react-scripts build",
-    "electron:build": " NODE_ENV=production electron-packager . --overwrite --platform=darwin --arch=x64 --icon=src/assets/Battery.icns --prune=true --out=release-builds",
+    "electron:build": "NODE_ENV=production electron-packager . --overwrite --platform=darwin --arch=x64 --icon=src/assets/Battery.icns --prune=true --out=release-builds --darwin-dark-mode-support=true",
     "build": "yarn react:build && yarn electron:build"
   },
   "eslintConfig": {

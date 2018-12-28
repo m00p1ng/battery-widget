@@ -72,6 +72,8 @@ const createContextMenu = () => {
   Object.values(windowPosition).forEach(pos => {
     menu.append(new MenuItem({
       label: positionName[pos],
+      type: 'radio',
+      checked: pos === config.position,
       click: () => {
         mainWindow.setBounds(getPosition({
           position: pos,
@@ -83,10 +85,6 @@ const createContextMenu = () => {
   })
 
   menu.append(new MenuItem({ type: 'separator' }))
-  menu.append(new MenuItem({
-    label: 'Theme',
-    enabled: false,
-  }))
   Object.keys(themePreset).forEach((themeName => {
     menu.append(new MenuItem({
       label: themePreset[themeName].name,
@@ -100,11 +98,6 @@ const createContextMenu = () => {
   }))
 
   menu.append(new MenuItem({ type: 'separator' }))
-  menu.append(new MenuItem({
-    label: 'Show Estimate',
-    enabled: false,
-  }))
-
   const estimateMenuList = [
     {
       name: 'Battery Time',
@@ -187,7 +180,7 @@ const initSetting = () => {
   const defaultSetting = {
     batteryEstimate: false,
     chargingEstimate: false,
-    postion: windowPosition.BOTTOM_RIGHT,
+    position: windowPosition.BOTTOM_RIGHT,
     theme: 'ultra-dark',
     transparent: true,
   }
