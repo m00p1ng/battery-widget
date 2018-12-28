@@ -16,11 +16,13 @@ const windowPosition = {
 }
 
 let lastStatus = ''
-let currentPosition
-let showBatteryEstimate
-let showChargeEstimate
-let isTransparent
-let currentTheme
+let config = {
+  position: null,
+  showBatteryEstimate: null,
+  showChargeEstimate: null,
+  transparent: null,
+  theme: null,
+}
 
 let themePreset = {
   'ultra-dark': {
@@ -46,7 +48,7 @@ const createWindow = () => {
 
   app.setName('Battery Widget')
   mainWindow = new BrowserWindow({
-    ...getPosition({ position: currentPosition, batteryStatus: '' }),
+    ...getPosition({ position: config.position, batteryStatus: '' }),
     height: windowHeight,
     focusable: false,
     resizable: false,
@@ -55,8 +57,8 @@ const createWindow = () => {
       backgroundThrottling: false,
     },
     frame: false,
-    vibrancy: isTransparent ? currentTheme : null,
-    backgroundColor: isTransparent ? null : themePreset[currentTheme].backgroundColor,
+    vibrancy: config.transparent ? config.theme : null,
+    backgroundColor: config.transparent ? null : themePreset[config.theme].backgroundColor,
   })
 
   mainWindow.setVisibleOnAllWorkspaces(true)
@@ -78,7 +80,7 @@ const createContextMenu = () => {
           position: pos,
           batteryStatus: lastStatus,
         }))
-        currentPosition = pos
+        config.position = pos
         settings.set('position', pos)
       }
     }))
@@ -93,10 +95,10 @@ const createContextMenu = () => {
     menu.append(new MenuItem({
       label: themePreset[themeName].name,
       type: 'radio',
-      checked: themeName === currentTheme,
+      checked: themeName === config.theme,
       click: () => {
         mainWindow.setVibrancy(themeName)
-        currentTheme = themeName
+        config.theme = themeName
         settings.set('theme', themeName)
       }
     }))
@@ -110,13 +112,13 @@ const createContextMenu = () => {
   menu.append(new MenuItem({
     label: 'Battery Time',
     type: 'checkbox',
-    checked: showBatteryEstimate,
+    checked: config.showBatteryEstimate,
     click: () => {
-      showBatteryEstimate = !showBatteryEstimate
-      settings.set('estimate.battery', showBatteryEstimate)
-      mainWindow.webContents.send('show-battery-estimate', showBatteryEstimate)
+      config.showBatteryEstimate = !config.showBatteryEstimate
+      settings.set('estimate.battery', config.showBatteryEstimate)
+      mainWindow.webContents.send('show-battery-estimate', config.showBatteryEstimate)
       mainWindow.setBounds(getPosition({
-        currentPosition,
+        position: config.position,
         batteryStatus: lastStatus,
       }))
     }
@@ -125,13 +127,13 @@ const createContextMenu = () => {
   menu.append(new MenuItem({
     label: 'Charging Time',
     type: 'checkbox',
-    checked: showChargeEstimate,
+    checked: config.showChargeEstimate,
     click: () => {
-      showChargeEstimate = !showChargeEstimate
-      settings.set('estimate.charging', showChargeEstimate)
-      mainWindow.webContents.send('show-charge-estimate', showChargeEstimate)
+      config.showChargeEstimate = !config.showChargeEstimate
+      settings.set('estimate.charging', config.showChargeEstimate)
+      mainWindow.webContents.send('show-charge-estimate', config.showChargeEstimate)
       mainWindow.setBounds(getPosition({
-        currentPosition,
+        position: config.position,
         batteryStatus: lastStatus,
       }))
     }
@@ -151,8 +153,8 @@ const createContextMenu = () => {
 }
 
 const isShowEstimate = ({ batteryStatus: status }) => (
-  (showBatteryEstimate && status === 'discharging') ||
-  (showChargeEstimate && (status === 'charging' || status === 'charged'))
+  (config.showBatteryEstimate && status === 'discharging') ||
+  (config.showChargeEstimate && (status === 'charging' || status === 'charged'))
 )
 
 const getPosition = ({ position, batteryStatus }) => {
@@ -204,15 +206,15 @@ const initSetting = () => {
     settings.set('theme', 'ultra-dark')
   }
 
-  if (!settings.has('isTransparent')) {
-    settings.set('isTransparent', true)
+  if (!settings.has('config.transparent')) {
+    settings.set('config.transparent', true)
   }
 
-  currentPosition = settings.get('position')
-  showBatteryEstimate = settings.get('estimate.battery')
-  showChargeEstimate = settings.get('estimate.charging')
-  currentTheme = settings.get('theme')
-  isTransparent = settings.get('isTransparent')
+  config.position = settings.get('position')
+  config.showBatteryEstimate = settings.get('estimate.battery')
+  config.showChargeEstimate = settings.get('estimate.charging')
+  config.theme = settings.get('theme')
+  config.transparent = settings.get('config.transparent')
 }
 
 app.on('ready', () => {
@@ -226,8 +228,8 @@ app.on('ready', () => {
   mainWindow.webContents.on('did-finish-load', () => {
     createContextMenu()
     app.dock.hide()
-    mainWindow.webContents.send('show-charge-estimate', showChargeEstimate)
-    mainWindow.webContents.send('show-battery-estimate', showBatteryEstimate)
+    mainWindow.webContents.send('show-charge-estimate', config.showChargeEstimate)
+    mainWindow.webContents.send('show-battery-estimate', config.showBatteryEstimate)
 
     BatteryLevel().subscribe((result) => {
       mainWindow.webContents.send('battery-level', result)
@@ -235,7 +237,7 @@ app.on('ready', () => {
 
       if (status !== lastStatus) {
         mainWindow.setBounds(getPosition({
-          position: currentPosition,
+          position: config.position,
           batteryStatus: status,
         }))
       }
