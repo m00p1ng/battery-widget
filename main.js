@@ -27,19 +27,19 @@ let config = {
 let themePreset = {
   'ultra-dark': {
     name: 'Ultra Dark',
-    backgroundColor: '#000',
+    backgroundColor: '#000000',
   },
   'dark': {
     name: 'Dark',
-    backgroundColor: '#000',
+    backgroundColor: '#000000',
   },
   'light': {
     name: 'Light',
-    backgroundColor: '#fff',
+    backgroundColor: '#FFFFFF',
   },
   'medium-light': {
     name: 'Medium Light',
-    backgroundColor: '#ff',
+    backgroundColor: '#FFFFFF',
   }
 }
 
@@ -55,6 +55,7 @@ const createWindow = () => {
     alwaysOnTop: true,
     webPreferences: {
       backgroundThrottling: false,
+      nodeIntegration: true,
     },
     frame: false,
     vibrancy: config.transparent ? config.theme : null,

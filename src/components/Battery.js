@@ -6,7 +6,7 @@ const Battery = ({ percentage, status, estimate }) => (
     <defs>
       <rect id="path-1" x="112" y="19" width="12" height="22"></rect>
     </defs>
-    <g id="Battery" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+    <g id="Battery" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
       <Percentage percent={percentage} />
       <BatteryOutline />
       {renderLightning({ status, estimate })}
@@ -41,19 +41,19 @@ const Percentage = ({ percent }) => {
 }
 
 const Lightning = () => (
-  <g id="Lightning/Black" transform="translate(40.000000, -2.000000)" fill="#FFE010" stroke="#000000" stroke-opacity="0.158825861" stroke-width="2">
+  <g id="Lightning/Black" transform="translate(40.000000, -2.000000)" fill="#FFE010" stroke="#000000" strokeOpacity="0.158825861" strokeWidth="2">
     <path d="M20.3616433,33.6790437 L35.5335852,33.6790437 L4.42513951,74.0313343 L16.5448499,42.4669513 L0.507257113,42.4669513 L31.1064872,1.41955907 L20.3616433,33.6790437 Z" id="lightning"></path>
   </g>
 )
 
 const BatteryOutline = () => (
   <g id="Battery_Border/Black" transform="translate(2.000000, 5.000000)">
-    <rect id="Rectangle" stroke="#FFFFFF" stroke-width="8" x="4" y="4" width="102" height="52" rx="12"></rect>
+    <rect id="Rectangle" stroke="#FFFFFF" strokeWidth="8" x="4" y="4" width="102" height="52" rx="12"></rect>
     <mask id="mask-2" fill="white">
       <use xlinkHref="#path-1"></use>
     </mask>
     <g id="Rectangle"></g>
-    <circle id="Oval" fill="#FFFFFF" fill-rule="evenodd" mask="url(#mask-2)" cx="113" cy="30" r="11"></circle>
+    <circle id="Oval" fill="#FFFFFF" fillRule="evenodd" mask="url(#mask-2)" cx="113" cy="30" r="11"></circle>
   </g>
 )
 
