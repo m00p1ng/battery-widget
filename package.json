@@ -1,5 +1,6 @@
 {
   "name": "battery-widget",
+  "productName": "Battery Widget",
   "version": "0.1.0",
   "private": true,
   "main": "main.js",
@@ -17,13 +18,11 @@
     "electron-packager": "^13.0.1"
   },
   "scripts": {
-    "start": "BROWSER=none react-scripts start",
-    "react:build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
+    "react:start": "BROWSER=none react-scripts start",
     "electron": "NODE_ENV=development electron .",
+    "react:build": "react-scripts build",
     "electron:build": " NODE_ENV=production electron-packager . --overwrite --platform=darwin --arch=x64 --icon=src/assets/Battery.icns --prune=true --out=release-builds",
-    "app:build": "yarn react:build && yarn electron:build"
+    "build": "yarn react:build && yarn electron:build"
   },
   "eslintConfig": {
     "extends": "react-app"
