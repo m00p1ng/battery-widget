@@ -53,7 +53,7 @@ class TimerClock extends Component {
   render() {
     return (
       <div id="timer-wrapper">
-        <div className="display-time">
+        <div id="display-time">
           {this.formatOutput()}
           <ControlButton
             startTimer={this.startTimer}

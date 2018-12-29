@@ -1,9 +1,9 @@
 import React from 'react'
 
-const BatteryOutline = () => (
+const BatteryOutline = ({ fontColor }) => (
   <g id="Battery_Border" transform="translate(2.000000, 5.000000)">
     <rect id="Rectangle"
-      stroke="#FFFFFF"
+      stroke={fontColor}
       strokeWidth="8"
       x="4"
       y="4"
@@ -16,7 +16,7 @@ const BatteryOutline = () => (
     </mask>
     <g id="Rectangle" />
     <circle id="Oval"
-      fill="#FFFFFF"
+      fill={fontColor}
       fillRule="evenodd"
       mask="url(#mask-2)"
       cx="113"

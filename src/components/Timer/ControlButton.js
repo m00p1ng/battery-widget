@@ -2,7 +2,7 @@ import React from 'react'
 
 const ControlButton = ({ time, isOn, startTimer, pauseTimer, stopTimer }) => {
   return (
-    <div className="mode-button-wrapper">
+    <div id="mode-button-wrapper">
       {time === 0 && (
         <button onClick={startTimer} className="button">
           start

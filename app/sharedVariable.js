@@ -26,6 +26,34 @@ const themePreset = {
     name: 'Medium Light',
   }
 }
+const normalThemePreset = {
+  'none': {
+    name: 'None',
+    backgroundColor: '#FFFFFF00',
+    fontColor: 'white',
+  },
+  'red': {
+    name: 'Red',
+    backgroundColor: '#FF000020',
+    fontColor: 'white',
+  },
+  'blue': {
+    name: 'Blue',
+    backgroundColor: '#2196f340',
+    fontColor: 'white'
+  },
+  'black': {
+    name: 'Black',
+    backgroundColor: 'black',
+    fontColor: 'white',
+  },
+  'white': {
+    name: 'White',
+    backgroundColor: 'white',
+    fontColor: 'black',
+  },
+}
+
 const notShowStatus = [
   BatteryStatus.AC_ATTACHED,
   BatteryStatus.FINISHING_CHARGE,
@@ -135,6 +163,7 @@ module.exports = {
   windowPosition,
   windowWidth,
   themePreset,
+  normalThemePreset,
   getPosition,
   isShowEstimate,
 }

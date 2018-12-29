@@ -10,6 +10,7 @@ const {
   windowHeight,
   windowTimerHeight,
   isShowEstimate,
+  normalThemePreset,
 } = require('./app/sharedVariable')
 
 let mainWindow
@@ -70,6 +71,7 @@ app.on('ready', () => {
     createContextMenu(mainWindow)
     app.dock.hide()
     mainWindow.webContents.send('show-estimate', false)
+    mainWindow.webContents.send('color-theme', normalThemePreset[global.config.color])
 
     BatteryLevel().subscribe(battery => {
       const { status } = battery

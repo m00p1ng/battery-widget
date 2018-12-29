@@ -11,7 +11,7 @@ const renderSymbol = (status) => (
     <Lightning /> : <Plug />
 )
 
-const Battery = ({ percentage, source, status }) => (
+const Battery = ({ percentage, source, status, fontColor }) => (
   <svg id="battery-icon"
     width="33px"
     height="18px"
@@ -25,7 +25,7 @@ const Battery = ({ percentage, source, status }) => (
     </defs>
     <g id="Battery" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
       <Percentage percent={percentage} />
-      <BatteryOutline />
+      <BatteryOutline fontColor={fontColor} />
       {(source === 'Power Adapter') && renderSymbol(status)}
     </g>
   </svg>

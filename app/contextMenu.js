@@ -4,6 +4,7 @@ const { app, MenuItem, Menu } = electron
 const {
   windowPosition,
   themePreset,
+  normalThemePreset,
   getPosition,
   isShowEstimate,
 } = require('./sharedVariable')
@@ -79,16 +80,29 @@ const createContextMenu = (mainWindow) => {
 
   menu.append(new MenuItem({
     label: 'Theme',
-    submenu: Object.keys(themePreset)
-      .map(themeName => new MenuItem({
-        label: themePreset[themeName].name,
-        type: 'radio',
-        checked: themeName === global.config.theme,
-        click: () => {
-          mainWindow.setVibrancy(themeName)
-          setToCurrent('theme', themeName)
-        },
-      })),
+    submenu: [
+      ...Object.keys(themePreset)
+        .map(themeName => new MenuItem({
+          label: themePreset[themeName].name,
+          type: 'radio',
+          checked: themeName === global.config.theme,
+          click: () => {
+            mainWindow.setVibrancy(themeName)
+            setToCurrent('theme', themeName)
+          },
+        })),
+      new MenuItem({ type: 'separator' }),
+      ...Object.keys(normalThemePreset)
+        .map(themeName => new MenuItem({
+          label: normalThemePreset[themeName].name,
+          type: 'radio',
+          checked: themeName === global.config.color,
+          click: () => {
+            setToCurrent('color', themeName)
+            mainWindow.webContents.send('color-theme', normalThemePreset[themeName])
+          },
+        })),
+    ]
   }))
 
   const estimateMenuList = [

@@ -7,6 +7,7 @@ const initSetting = () => {
     chargingEstimate: false,
     position: windowPosition.BOTTOM_RIGHT,
     theme: 'ultra-dark',
+    color: 'none',
     transparent: true,
     x: 0,
     y: 0,

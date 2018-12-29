@@ -1,5 +1,6 @@
-.app {
-  color: white;
+#app {
+  margin-top: 0.5rem;
+  padding-bottom: 0.5rem;
   font-family: Helvetica, sans-serif;
 }
 
@@ -17,7 +18,7 @@
   margin-left: 0.3rem;
 }
 
-.battery-wrapper {
+#battery-wrapper {
   display: flex;
 }
 
@@ -33,7 +34,7 @@
   justify-content: center;
 }
 
-.display-time {
+#display-time {
   font-size: 35vh;
   line-height: 40vh;
   text-align: center;
@@ -42,9 +43,9 @@
 html,
 body {
   overflow: hidden;
-  margin: 0.25rem 0 0;
+  margin: 0;
   padding: 0;
-  background-color: black;
+  background-color: #ff8f0080;
 }
 
 *,
@@ -63,7 +64,7 @@ body {
   border-radius: 5px;
 }
 
-.mode-button-wrapper {
+#mode-button-wrapper {
   display: flex;
   justify-content: space-around;
 }
