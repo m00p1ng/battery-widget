@@ -54,6 +54,7 @@ app.on('before-quit', () => {
   if (global.timerEnable) {
     y += (windowTimerHeight - windowHeight)
   }
+  settings.set('position', global.config.position)
   settings.set('x', x)
   settings.set('y', y)
 })

@@ -16,19 +16,19 @@ class App extends Component {
   }
 
   componentDidMount() {
-    ipcRenderer.on('battery', (event, battery) => {
+    ipcRenderer.on('battery', (_event, battery) => {
       this.setState({ battery })
     })
 
-    ipcRenderer.on('timer', (event, timerEnable) => {
+    ipcRenderer.on('timer', (_event, timerEnable) => {
       this.setState({ timerEnable })
     })
 
-    ipcRenderer.on('show-estimate', (event, showEstimate) => {
+    ipcRenderer.on('show-estimate', (_event, showEstimate) => {
       this.setState({ showEstimate })
     })
 
-    ipcRenderer.on('color-theme', (event, theme) => {
+    ipcRenderer.on('color-theme', (_event, theme) => {
       document.body.style.backgroundColor = theme.backgroundColor
       document.body.style.color = theme.fontColor
       this.setState({ fontColor: theme.fontColor })

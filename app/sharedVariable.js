@@ -34,13 +34,18 @@ const normalThemePreset = {
   },
   'red': {
     name: 'Red',
-    backgroundColor: '#FF000020',
+    backgroundColor: '#FF000040',
     fontColor: 'white',
   },
   'blue': {
     name: 'Blue',
     backgroundColor: '#2196f340',
     fontColor: 'white'
+  },
+  'orange': {
+    name: 'Orange',
+    backgroundColor: '#ff8f0080',
+    fontColor: 'white',
   },
   'black': {
     name: 'Black',
