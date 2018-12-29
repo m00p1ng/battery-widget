@@ -136,4 +136,5 @@ module.exports = {
   windowWidth,
   themePreset,
   getPosition,
+  isShowEstimate,
 }

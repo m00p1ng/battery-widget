@@ -9,6 +9,7 @@ const {
   getPosition,
   windowHeight,
   windowTimerHeight,
+  isShowEstimate,
 } = require('./app/sharedVariable')
 
 let mainWindow
@@ -68,12 +69,14 @@ app.on('ready', () => {
   mainWindow.webContents.on('did-finish-load', () => {
     createContextMenu(mainWindow)
     app.dock.hide()
-    mainWindow.webContents.send('show-chargingEstimate', global.config.chargingEstimate)
-    mainWindow.webContents.send('show-batteryEstimate', global.config.batteryEstimate)
+    mainWindow.webContents.send('show-estimate', false)
 
-    BatteryLevel().subscribe((result) => {
-      mainWindow.webContents.send('battery', result)
-      const { status } = result
+    BatteryLevel().subscribe(battery => {
+      const { status } = battery
+      const ShowEstimate = isShowEstimate({ batteryStatus: status })
+
+      mainWindow.webContents.send('battery', battery)
+      mainWindow.webContents.send('show-estimate', ShowEstimate)
 
       if (status !== global.lastStatus) {
         mainWindow.setBounds(getPosition({

@@ -4,7 +4,8 @@ const { app, MenuItem, Menu } = electron
 const {
   windowPosition,
   themePreset,
-  getPosition
+  getPosition,
+  isShowEstimate,
 } = require('./sharedVariable')
 
 const setToCurrent = (field, value) => {
@@ -107,7 +108,9 @@ const createContextMenu = (mainWindow) => {
         click: () => {
           const [x, y] = mainWindow.getPosition()
           setToCurrent(esMenu.field, !global.config[esMenu.field])
-          mainWindow.webContents.send(`show-${esMenu.field}`, global.config[esMenu.field])
+
+          const showEstimate = isShowEstimate({ batteryStatus: global.lastStatus })
+          mainWindow.webContents.send('show-estimate', showEstimate)
           mainWindow.setBounds(getPosition({
             position: global.config.position,
             batteryStatus: global.lastStatus,
