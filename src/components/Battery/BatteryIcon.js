@@ -1,10 +1,17 @@
 import React from 'react'
+import { STATUS as BatteryStatus } from 'macos-battery-level'
 
 import Lightning from './Lightning'
+import Plug from './Plug'
 import BatteryOutline from './BatteryOutline'
 import Percentage from './Percentage'
 
-const Battery = ({ percentage, source }) => (
+const renderSymbol = (status) => (
+  status === BatteryStatus.CHARGING ?
+    <Lightning /> : <Plug />
+)
+
+const Battery = ({ percentage, source, status }) => (
   <svg id="battery-icon"
     width="33px"
     height="18px"
@@ -13,14 +20,13 @@ const Battery = ({ percentage, source }) => (
     xmlns="http://www.w3.org/2000/svg"
     xmlnsXlink="http://www.w3.org/1999/xlink"
   >
-    <title>Battery</title>
     <defs>
-      <rect id="path-1" x="112" y="19" width="12" height="22" />
+      <rect id="path-1" x="112" y="19" width="18" height="33" />
     </defs>
     <g id="Battery" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
       <Percentage percent={percentage} />
       <BatteryOutline />
-      {source === 'Power Adapter' && <Lightning />}
+      {(source === 'Power Adapter') && renderSymbol(status)}
     </g>
   </svg>
 )
