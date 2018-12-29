@@ -28,7 +28,7 @@ const createWindow = () => {
     x: global.config.x,
     y: global.config.y,
     focusable: false,
-    // resizable: false,
+    resizable: false,
     alwaysOnTop: true,
     hasShadow: false,
     webPreferences: {

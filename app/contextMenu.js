@@ -133,7 +133,7 @@ const createContextMenu = (mainWindow) => {
         batteryStatus: global.lastStatus,
         timerEnable: global.timerEnable,
         customPosition: { x, y },
-      }))
+      }), true)
     }
   }))
 

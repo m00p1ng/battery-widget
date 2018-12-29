@@ -12,8 +12,8 @@ class TimerClock extends Component {
       start: 0
     }
     this.startTimer = this.startTimer.bind(this)
+    this.pauseTimer = this.pauseTimer.bind(this)
     this.stopTimer = this.stopTimer.bind(this)
-    this.resetTimer = this.resetTimer.bind(this)
   }
 
   startTimer() {
@@ -29,12 +29,12 @@ class TimerClock extends Component {
     }, 1);
   }
 
-  stopTimer() {
+  pauseTimer() {
     this.setState({ isOn: false })
     clearInterval(this.timer)
   }
 
-  resetTimer() {
+  stopTimer() {
     this.setState({ time: 0, isOn: false })
   }
 
@@ -52,15 +52,17 @@ class TimerClock extends Component {
 
   render() {
     return (
-      <div className="display-time">
-        {this.formatOutput()}
-        <ControlButton
-          startTimer={this.startTimer}
-          stopTimer={this.stopTimer}
-          resetTimer={this.resetTimer}
-          time={this.state.time}
-          isOn={this.state.isOn}
-        />
+      <div id="timer-wrapper">
+        <div className="display-time">
+          {this.formatOutput()}
+          <ControlButton
+            startTimer={this.startTimer}
+            pauseTimer={this.pauseTimer}
+            stopTimer={this.stopTimer}
+            time={this.state.time}
+            isOn={this.state.isOn}
+          />
+        </div>
       </div>
     )
   }

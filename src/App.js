@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Clock from 'react-live-clock';
 import BatterySection from './components/Battery/BatterySection'
-import Timer from './components/Timer/Timer'
+import TimerClock from './components/Timer/TimerClock'
 
 import './assets/styles.css'
 
@@ -16,7 +16,7 @@ class App extends Component {
     },
     showBatteryEstimate: false,
     showChargeEstimate: false,
-    timerEnable: true,
+    timerEnable: false,
   }
 
   componentDidMount() {
@@ -40,7 +40,7 @@ class App extends Component {
 
     return (
       <div className="app">
-        {timerEnable && <Timer />}
+        {timerEnable && <TimerClock />}
         <div id="widget-wrapper">
           <Clock ticking={true} format={'ddd HH:mm'} />
           {battery.percentage !== '' ?

@@ -31,7 +31,6 @@
   margin-bottom: 12vh;
   display: flex;
   justify-content: center;
-  align-items: center;
 }
 
 .display-time {
@@ -45,7 +44,6 @@ body {
   overflow: hidden;
   margin: 0.25rem 0 0;
   padding: 0;
-  background-color: black;
 }
 
 *,
