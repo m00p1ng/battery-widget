@@ -1,8 +1,8 @@
 import React from 'react'
 import { STATUS as BatteryStatus } from 'macos-battery-level'
 
-import Battery from './Battery'
-import '../assets/styles.css'
+import BatteryIcon from './BatteryIcon'
+import '../../assets/styles.css'
 
 const notShowStatus = [
   BatteryStatus.AC_ATTACHED,
@@ -29,7 +29,7 @@ const BatterySection = ({ battery, showBatteryEstimate, showChargeEstimate }) =>
   const { percentage, status, estimate } = battery
   return (
     <div className="battery-wrapper">
-      <Battery
+      <BatteryIcon
         percentage={percentage}
         estimate={estimate}
         status={status}

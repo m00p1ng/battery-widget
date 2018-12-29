@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Clock from 'react-live-clock';
-import BatterySection from './components/BatterySection'
-import Timer from './components/Timer'
+import BatterySection from './components/Battery/BatterySection'
+import Timer from './components/Timer/Timer'
 
 import './assets/styles.css'
 
@@ -16,7 +16,7 @@ class App extends Component {
     },
     showBatteryEstimate: false,
     showChargeEstimate: false,
-    timerEnable: false,
+    timerEnable: true,
   }
 
   componentDidMount() {

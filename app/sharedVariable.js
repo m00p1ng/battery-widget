@@ -2,7 +2,7 @@ const electron = require('electron')
 const { STATUS: BatteryStatus } = require('macos-battery-level')
 
 const windowHeight = 34
-const windowTimerHeight = 75
+const windowTimerHeight = 120
 const windowWidth = 180
 const windowEstimateWidth = 220;
 const windowPosition = {

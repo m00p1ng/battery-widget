@@ -27,14 +27,17 @@
 }
 
 #timer-wrapper {
-  height: 45vh;
-  font-size: 45vh;
-  line-height: 45vh;
-  margin-bottom: 9vh;
+  height: 60vh;
+  margin-bottom: 12vh;
   display: flex;
   justify-content: center;
   align-items: center;
+}
 
+.display-time {
+  font-size: 35vh;
+  line-height: 40vh;
+  text-align: center;
 }
 
 html,
@@ -52,4 +55,16 @@ body {
   -webkit-user-drag: none;
   -webkit-app-region: drag;
   cursor: default;
+}
+
+.button {
+  font-size: 0.9rem;
+  border: 0;
+  margin: 0.25rem;
+  border-radius: 5px;
+}
+
+.mode-button-wrapper {
+  display: flex;
+  justify-content: space-around;
 }

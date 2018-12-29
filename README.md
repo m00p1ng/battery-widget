@@ -13,13 +13,17 @@ $ git clone https://github.com/m00p1ng/battery-widget
 **Install Dependency pakages**
 ```
 $ yarn
-or 
+
+or
+
 $ npm install
 ```
 
 **Build**
 ```
 $ yarn build
+
 or
+
 $ npm run build
 ```
