@@ -68,6 +68,10 @@ const createContextMenu = (mainWindow) => {
         click: () => {
           global.lock = !global.lock
           mainWindow.setMovable(!global.lock)
+          if (!global.lock) {
+            setToCurrent('position', windowPosition.CUSTOM)
+            menu.getMenuItemById('custom-position').checked = true
+          }
         },
       }),
     ],
