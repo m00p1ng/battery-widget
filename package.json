@@ -3,7 +3,7 @@
   "productName": "Battery Widget",
   "version": "1.0.0",
   "private": true,
-  "main": "./main.js",
+  "main": "./app/main.js",
   "homepage": "./",
   "dependencies": {
     "electron-settings": "^3.2.0",
