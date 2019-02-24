@@ -4,7 +4,7 @@ import BatteryIcon from './BatteryIcon'
 import '../../assets/styles.css'
 
 class BatterySection extends Component {
-  shouldComponentUpdate(nextProps, nextState) {
+  shouldComponentUpdate(nextProps) {
     return JSON.stringify(this.props) !== JSON.stringify(nextProps)
   }
 
